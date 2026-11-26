@@ -1,0 +1,110 @@
+[
+ {
+  "adk_version": "1.39.1",
+  "python": "3.12.10",
+  "capture": "NO_CONTENT",
+  "plugin": "guide",
+  "file": "spans_adk1.39.1_no_content_guide.json",
+  "root_names": [
+   "invocation"
+  ],
+  "root_user": true,
+  "root_conv": false,
+  "root_input": true,
+  "root_output": false,
+  "tool_evidence": true,
+  "catch_contradiction": true,
+  "catch_false_refund": true,
+  "span_count": 11
+ },
+ {
+  "adk_version": "1.39.1",
+  "python": "3.12.10",
+  "capture": "SPAN_ONLY",
+  "plugin": "fixed",
+  "file": "spans_adk1.39.1_span_only_fixed.json",
+  "root_names": [
+   "invocation"
+  ],
+  "root_user": true,
+  "root_conv": true,
+  "root_input": true,
+  "root_output": true,
+  "tool_evidence": true,
+  "catch_contradiction": true,
+  "catch_false_refund": true,
+  "span_count": 11
+ },
+ {
+  "adk_version": "1.39.1",
+  "python": "3.12.10",
+  "capture": "SPAN_ONLY",
+  "plugin": "guide",
+  "file": "spans_adk1.39.1_span_only_guide.json",
+  "root_names": [
+   "invocation"
+  ],
+  "root_user": true,
+  "root_conv": false,
+  "root_input": true,
+  "root_output": false,
+  "tool_evidence": true,
+  "catch_contradiction": true,
+  "catch_false_refund": true,
+  "span_count": 11
+ },
+ {
+  "adk_version": "2.15.1",
+  "python": "3.12.10",
+  "capture": "NO_CONTENT",
+  "plugin": "guide",
+  "file": "spans_adk2.15.1_no_content_guide.json",
+  "root_names": [
+   "invoke_workflow"
+  ],
+  "root_user": true,
+  "root_conv": true,
+  "root_input": true,
+  "root_output": true,
+  "tool_evidence": false,
+  "catch_contradiction": false,
+  "catch_false_refund": true,
+  "span_count": 8
+ },
+ {
+  "adk_version": "2.15.1",
+  "python": "3.12.10",
+  "capture": "SPAN_ONLY",
+  "plugin": "fixed",
+  "file": "spans_adk2.15.1_span_only_fixed.json",
+  "root_names": [
+   "invoke_workflow"
+  ],
+  "root_user": true,
+  "root_conv": true,
+  "root_input": true,
+  "root_output": true,
+  "tool_evidence": true,
+  "catch_contradiction": true,
+  "catch_false_refund": true,
+  "span_count": 8
+ },
+ {
+  "adk_version": "2.15.1",
+  "python": "3.12.10",
+  "capture": "SPAN_ONLY",
+  "plugin": "guide",
+  "file": "spans_adk2.15.1_span_only_guide.json",
+  "root_names": [
+   "invoke_workflow"
+  ],
+  "root_user": true,
+  "root_conv": true,
+  "root_input": true,
+  "root_output": true,
+  "tool_evidence": true,
+  "catch_contradiction": true,
+  "catch_false_refund": true,
+  "span_count": 8
+ }
+]

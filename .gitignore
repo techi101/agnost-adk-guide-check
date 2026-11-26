@@ -1,0 +1,6 @@
+.venv/
+.venv1/
+shots/
+APPLICATION.md
+__pycache__/
+.vercel/

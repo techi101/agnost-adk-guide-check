@@ -1,0 +1,467 @@
+{
+ "meta": {
+  "adk_version": "2.15.1",
+  "python": "3.12.10",
+  "capture": "NO_CONTENT",
+  "plugin": "guide"
+ },
+ "posts": [
+  {
+   "path": "/v1/traces",
+   "org_header": "test-org-id",
+   "request": {
+    "resourceSpans": [
+     {
+      "resource": {
+       "attributes": [
+        {
+         "key": "service.name",
+         "value": {
+          "stringValue": "my-adk-agent"
+         }
+        }
+       ]
+      },
+      "scopeSpans": [
+       {
+        "scope": {
+         "name": "gcp.vertex.agent",
+         "version": "2.15.1"
+        },
+        "spans": [
+         {
+          "traceId": "+A2rLIPVtfxaiVT3UF4LVw==",
+          "spanId": "bnEW49ZM9/Q=",
+          "parentSpanId": "+gDggytGqj0=",
+          "name": "execute_tool lookup_policy",
+          "kind": "SPAN_KIND_INTERNAL",
+          "startTimeUnixNano": "1795682745938291300",
+          "endTimeUnixNano": "1795682745939973600",
+          "attributes": [
+           {
+            "key": "gen_ai.operation.name",
+            "value": {
+             "stringValue": "execute_tool"
+            }
+           },
+           {
+            "key": "gen_ai.tool.description",
+            "value": {
+             "stringValue": "Returns the store policy for a topic."
+            }
+           },
+           {
+            "key": "gen_ai.tool.name",
+            "value": {
+             "stringValue": "lookup_policy"
+            }
+           },
+           {
+            "key": "gen_ai.tool.type",
+            "value": {
+             "stringValue": "FunctionTool"
+            }
+           },
+           {
+            "key": "gen_ai.agent.name",
+            "value": {
+             "stringValue": "support_agent"
+            }
+           },
+           {
+            "key": "gen_ai.tool.call.id",
+            "value": {
+             "stringValue": "adk-80b032c0-909a-4d03-ba08-b6cb932fbaab"
+            }
+           },
+           {
+            "key": "gcp.vertex.agent.event_id",
+            "value": {
+             "stringValue": "78838076-36da-42cf-a7a5-9697ac8943c3"
+            }
+           }
+          ],
+          "status": {},
+          "flags": 256
+         },
+         {
+          "traceId": "+A2rLIPVtfxaiVT3UF4LVw==",
+          "spanId": "EJwMbYodLPk=",
+          "parentSpanId": "+gDggytGqj0=",
+          "name": "generate_content scripted-support",
+          "kind": "SPAN_KIND_INTERNAL",
+          "startTimeUnixNano": "1795682745934736500",
+          "endTimeUnixNano": "1795682745939973600",
+          "attributes": [
+           {
+            "key": "gen_ai.operation.name",
+            "value": {
+             "stringValue": "generate_content"
+            }
+           },
+           {
+            "key": "gen_ai.request.model",
+            "value": {
+             "stringValue": "scripted-support"
+            }
+           },
+           {
+            "key": "gen_ai.agent.name",
+            "value": {
+             "stringValue": "support_agent"
+            }
+           },
+           {
+            "key": "gen_ai.conversation.id",
+            "value": {
+             "stringValue": "session-abc"
+            }
+           },
+           {
+            "key": "gcp.vertex.agent.event_id",
+            "value": {
+             "stringValue": "0b6d126a-23aa-4842-b267-51b6e6666af4"
+            }
+           },
+           {
+            "key": "gcp.vertex.agent.invocation_id",
+            "value": {
+             "stringValue": "e-8a49d6d2-bbb4-4e7e-81fc-3eba1e86120e"
+            }
+           },
+           {
+            "key": "gen_ai.provider.name",
+            "value": {
+             "stringValue": "gcp.gemini"
+            }
+           },
+           {
+            "key": "gen_ai.response.model",
+            "value": {
+             "stringValue": "scripted-support"
+            }
+           },
+           {
+            "key": "gen_ai.tool.definitions",
+            "value": {
+             "stringValue": "[{\"name\":\"lookup_policy\",\"description\":\"Returns the store policy for a topic.\",\"parameters\":null,\"type\":\"function\"},{\"name\":\"issue_refund\",\"description\":\"Issues a refund for an order.\",\"parameters\":null,\"type\":\"function\"}]"
+            }
+           }
+          ],
+          "status": {},
+          "flags": 256
+         },
+         {
+          "traceId": "+A2rLIPVtfxaiVT3UF4LVw==",
+          "spanId": "epQXOla/T0U=",
+          "parentSpanId": "+gDggytGqj0=",
+          "name": "generate_content scripted-support",
+          "kind": "SPAN_KIND_INTERNAL",
+          "startTimeUnixNano": "1795682745939973600",
+          "endTimeUnixNano": "1795682745939973600",
+          "attributes": [
+           {
+            "key": "gen_ai.operation.name",
+            "value": {
+             "stringValue": "generate_content"
+            }
+           },
+           {
+            "key": "gen_ai.request.model",
+            "value": {
+             "stringValue": "scripted-support"
+            }
+           },
+           {
+            "key": "gen_ai.agent.name",
+            "value": {
+             "stringValue": "support_agent"
+            }
+           },
+           {
+            "key": "gen_ai.conversation.id",
+            "value": {
+             "stringValue": "session-abc"
+            }
+           },
+           {
+            "key": "gcp.vertex.agent.event_id",
+            "value": {
+             "stringValue": "d2c4645f-5321-4653-86b6-3bdd3cefa7b6"
+            }
+           },
+           {
+            "key": "gcp.vertex.agent.invocation_id",
+            "value": {
+             "stringValue": "e-8a49d6d2-bbb4-4e7e-81fc-3eba1e86120e"
+            }
+           },
+           {
+            "key": "gen_ai.provider.name",
+            "value": {
+             "stringValue": "gcp.gemini"
+            }
+           },
+           {
+            "key": "gen_ai.response.model",
+            "value": {
+             "stringValue": "scripted-support"
+            }
+           },
+           {
+            "key": "gen_ai.tool.definitions",
+            "value": {
+             "stringValue": "[{\"name\":\"lookup_policy\",\"description\":\"Returns the store policy for a topic.\",\"parameters\":null,\"type\":\"function\"},{\"name\":\"issue_refund\",\"description\":\"Issues a refund for an order.\",\"parameters\":null,\"type\":\"function\"}]"
+            }
+           }
+          ],
+          "status": {},
+          "flags": 256
+         },
+         {
+          "traceId": "+A2rLIPVtfxaiVT3UF4LVw==",
+          "spanId": "+gDggytGqj0=",
+          "parentSpanId": "0kN91k26lDo=",
+          "name": "invoke_agent support_agent",
+          "kind": "SPAN_KIND_INTERNAL",
+          "startTimeUnixNano": "1795682745888947600",
+          "endTimeUnixNano": "1795682745939973600",
+          "attributes": [
+           {
+            "key": "gen_ai.operation.name",
+            "value": {
+             "stringValue": "invoke_agent"
+            }
+           },
+           {
+            "key": "gen_ai.agent.description",
+            "value": {
+             "stringValue": ""
+            }
+           },
+           {
+            "key": "gen_ai.agent.name",
+            "value": {
+             "stringValue": "support_agent"
+            }
+           },
+           {
+            "key": "gen_ai.conversation.id",
+            "value": {
+             "stringValue": "session-abc"
+            }
+           }
+          ],
+          "status": {},
+          "flags": 256
+         },
+         {
+          "traceId": "+A2rLIPVtfxaiVT3UF4LVw==",
+          "spanId": "0kN91k26lDo=",
+          "name": "invoke_workflow support_agent",
+          "kind": "SPAN_KIND_INTERNAL",
+          "startTimeUnixNano": "1795682745884258300",
+          "endTimeUnixNano": "1795682745939973600",
+          "attributes": [
+           {
+            "key": "gen_ai.operation.name",
+            "value": {
+             "stringValue": "invoke_workflow"
+            }
+           },
+           {
+            "key": "gen_ai.conversation.id",
+            "value": {
+             "stringValue": "session-abc"
+            }
+           },
+           {
+            "key": "gen_ai.workflow.name",
+            "value": {
+             "stringValue": "support_agent"
+            }
+           },
+           {
+            "key": "user.id",
+            "value": {
+             "stringValue": "user-42"
+            }
+           },
+           {
+            "key": "gen_ai.input.messages",
+            "value": {
+             "stringValue": "[{\"role\": \"user\", \"parts\": [{\"type\": \"text\", \"content\": \"Can I return the jacket I bought last week?\"}]}]"
+            }
+           },
+           {
+            "key": "gen_ai.output.messages",
+            "value": {
+             "stringValue": "[{\"role\": \"assistant\", \"parts\": [{\"type\": \"text\", \"content\": \"Yes! You have 30 days to return it.\"}]}]"
+            }
+           }
+          ],
+          "status": {},
+          "flags": 256
+         },
+         {
+          "traceId": "e9fhvL7xTs4gWWozWe4iaA==",
+          "spanId": "Aeaf/g3q0mo=",
+          "parentSpanId": "tnLfgy/vaRM=",
+          "name": "generate_content scripted-support",
+          "kind": "SPAN_KIND_INTERNAL",
+          "startTimeUnixNano": "1795682745939973600",
+          "endTimeUnixNano": "1795682745939973600",
+          "attributes": [
+           {
+            "key": "gen_ai.operation.name",
+            "value": {
+             "stringValue": "generate_content"
+            }
+           },
+           {
+            "key": "gen_ai.request.model",
+            "value": {
+             "stringValue": "scripted-support"
+            }
+           },
+           {
+            "key": "gen_ai.agent.name",
+            "value": {
+             "stringValue": "support_agent"
+            }
+           },
+           {
+            "key": "gen_ai.conversation.id",
+            "value": {
+             "stringValue": "session-abc"
+            }
+           },
+           {
+            "key": "gcp.vertex.agent.event_id",
+            "value": {
+             "stringValue": "8fcae9c7-614e-4554-aa9c-bce1184c82cb"
+            }
+           },
+           {
+            "key": "gcp.vertex.agent.invocation_id",
+            "value": {
+             "stringValue": "e-93ec5380-f791-4e47-ac28-9f7779bf08ee"
+            }
+           },
+           {
+            "key": "gen_ai.provider.name",
+            "value": {
+             "stringValue": "gcp.gemini"
+            }
+           },
+           {
+            "key": "gen_ai.response.model",
+            "value": {
+             "stringValue": "scripted-support"
+            }
+           },
+           {
+            "key": "gen_ai.tool.definitions",
+            "value": {
+             "stringValue": "[{\"name\":\"lookup_policy\",\"description\":\"Returns the store policy for a topic.\",\"parameters\":null,\"type\":\"function\"},{\"name\":\"issue_refund\",\"description\":\"Issues a refund for an order.\",\"parameters\":null,\"type\":\"function\"}]"
+            }
+           }
+          ],
+          "status": {},
+          "flags": 256
+         },
+         {
+          "traceId": "e9fhvL7xTs4gWWozWe4iaA==",
+          "spanId": "tnLfgy/vaRM=",
+          "parentSpanId": "zPwmApS6YfY=",
+          "name": "invoke_agent support_agent",
+          "kind": "SPAN_KIND_INTERNAL",
+          "startTimeUnixNano": "1795682745939973600",
+          "endTimeUnixNano": "1795682745939973600",
+          "attributes": [
+           {
+            "key": "gen_ai.operation.name",
+            "value": {
+             "stringValue": "invoke_agent"
+            }
+           },
+           {
+            "key": "gen_ai.agent.description",
+            "value": {
+             "stringValue": ""
+            }
+           },
+           {
+            "key": "gen_ai.agent.name",
+            "value": {
+             "stringValue": "support_agent"
+            }
+           },
+           {
+            "key": "gen_ai.conversation.id",
+            "value": {
+             "stringValue": "session-abc"
+            }
+           }
+          ],
+          "status": {},
+          "flags": 256
+         },
+         {
+          "traceId": "e9fhvL7xTs4gWWozWe4iaA==",
+          "spanId": "zPwmApS6YfY=",
+          "name": "invoke_workflow support_agent",
+          "kind": "SPAN_KIND_INTERNAL",
+          "startTimeUnixNano": "1795682745939973600",
+          "endTimeUnixNano": "1795682745939973600",
+          "attributes": [
+           {
+            "key": "gen_ai.operation.name",
+            "value": {
+             "stringValue": "invoke_workflow"
+            }
+           },
+           {
+            "key": "gen_ai.conversation.id",
+            "value": {
+             "stringValue": "session-abc"
+            }
+           },
+           {
+            "key": "gen_ai.workflow.name",
+            "value": {
+             "stringValue": "support_agent"
+            }
+           },
+           {
+            "key": "user.id",
+            "value": {
+             "stringValue": "user-42"
+            }
+           },
+           {
+            "key": "gen_ai.input.messages",
+            "value": {
+             "stringValue": "[{\"role\": \"user\", \"parts\": [{\"type\": \"text\", \"content\": \"Ok, please refund order 1042.\"}]}]"
+            }
+           },
+           {
+            "key": "gen_ai.output.messages",
+            "value": {
+             "stringValue": "[{\"role\": \"assistant\", \"parts\": [{\"type\": \"text\", \"content\": \"Done. Your refund for order 1042 has been processed.\"}]}]"
+            }
+           }
+          ],
+          "status": {},
+          "flags": 256
+         }
+        ],
+        "schemaUrl": "https://opentelemetry.io/schemas/1.36.0"
+       }
+      ]
+     }
+    ]
+   }
+  }
+ ]
+}

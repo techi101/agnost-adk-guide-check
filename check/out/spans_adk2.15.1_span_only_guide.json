@@ -1,0 +1,533 @@
+{
+ "meta": {
+  "adk_version": "2.15.1",
+  "python": "3.12.10",
+  "capture": "SPAN_ONLY",
+  "plugin": "guide"
+ },
+ "posts": [
+  {
+   "path": "/v1/traces",
+   "org_header": "test-org-id",
+   "request": {
+    "resourceSpans": [
+     {
+      "resource": {
+       "attributes": [
+        {
+         "key": "service.name",
+         "value": {
+          "stringValue": "my-adk-agent"
+         }
+        }
+       ]
+      },
+      "scopeSpans": [
+       {
+        "scope": {
+         "name": "gcp.vertex.agent",
+         "version": "2.15.1"
+        },
+        "spans": [
+         {
+          "traceId": "kci2lP8xT1TRdo+EsZTOhw==",
+          "spanId": "mrFcrVRYnJw=",
+          "parentSpanId": "Ps1kNwNKNS4=",
+          "name": "execute_tool lookup_policy",
+          "kind": "SPAN_KIND_INTERNAL",
+          "startTimeUnixNano": "1795682737032928800",
+          "endTimeUnixNano": "1795682737032928800",
+          "attributes": [
+           {
+            "key": "gen_ai.operation.name",
+            "value": {
+             "stringValue": "execute_tool"
+            }
+           },
+           {
+            "key": "gen_ai.tool.description",
+            "value": {
+             "stringValue": "Returns the store policy for a topic."
+            }
+           },
+           {
+            "key": "gen_ai.tool.name",
+            "value": {
+             "stringValue": "lookup_policy"
+            }
+           },
+           {
+            "key": "gen_ai.tool.type",
+            "value": {
+             "stringValue": "FunctionTool"
+            }
+           },
+           {
+            "key": "gen_ai.agent.name",
+            "value": {
+             "stringValue": "support_agent"
+            }
+           },
+           {
+            "key": "gen_ai.tool.call.id",
+            "value": {
+             "stringValue": "adk-45fafd4c-4520-4b48-bf9d-e2d0cba4f95e"
+            }
+           },
+           {
+            "key": "gcp.vertex.agent.event_id",
+            "value": {
+             "stringValue": "4f89a9c5-f188-451e-97d0-c6adcad92ab0"
+            }
+           },
+           {
+            "key": "gen_ai.tool.call.arguments",
+            "value": {
+             "stringValue": "{\"topic\": \"returns\"}"
+            }
+           },
+           {
+            "key": "gen_ai.tool.call.result",
+            "value": {
+             "stringValue": "{\"policy\": \"Returns are accepted within 14 days of delivery.\"}"
+            }
+           }
+          ],
+          "status": {},
+          "flags": 256
+         },
+         {
+          "traceId": "kci2lP8xT1TRdo+EsZTOhw==",
+          "spanId": "NfXEf5XFYuI=",
+          "parentSpanId": "Ps1kNwNKNS4=",
+          "name": "generate_content scripted-support",
+          "kind": "SPAN_KIND_INTERNAL",
+          "startTimeUnixNano": "1795682737031350900",
+          "endTimeUnixNano": "1795682737032928800",
+          "attributes": [
+           {
+            "key": "gen_ai.operation.name",
+            "value": {
+             "stringValue": "generate_content"
+            }
+           },
+           {
+            "key": "gen_ai.request.model",
+            "value": {
+             "stringValue": "scripted-support"
+            }
+           },
+           {
+            "key": "gen_ai.agent.name",
+            "value": {
+             "stringValue": "support_agent"
+            }
+           },
+           {
+            "key": "gen_ai.conversation.id",
+            "value": {
+             "stringValue": "session-abc"
+            }
+           },
+           {
+            "key": "gcp.vertex.agent.event_id",
+            "value": {
+             "stringValue": "87e5bb69-cc04-4ed2-a359-7457c619a3c9"
+            }
+           },
+           {
+            "key": "gcp.vertex.agent.invocation_id",
+            "value": {
+             "stringValue": "e-ddaaac18-a493-4f09-9208-7a245810fa9c"
+            }
+           },
+           {
+            "key": "gen_ai.provider.name",
+            "value": {
+             "stringValue": "gcp.gemini"
+            }
+           },
+           {
+            "key": "gen_ai.response.model",
+            "value": {
+             "stringValue": "scripted-support"
+            }
+           },
+           {
+            "key": "gen_ai.input.messages",
+            "value": {
+             "stringValue": "[{\"role\":\"user\",\"parts\":[{\"content\":\"Can I return the jacket I bought last week?\",\"type\":\"text\"}]}]"
+            }
+           },
+           {
+            "key": "gen_ai.system_instructions",
+            "value": {
+             "stringValue": "[{\"content\":\"Answer store questions. Use lookup_policy and issue_refund.\\n\\nYou are an agent. Your internal name is \\\"support_agent\\\".\",\"type\":\"text\"}]"
+            }
+           },
+           {
+            "key": "gen_ai.tool.definitions",
+            "value": {
+             "stringValue": "[{\"name\":\"lookup_policy\",\"description\":\"Returns the store policy for a topic.\",\"parameters\":{\"properties\":{\"topic\":{\"title\":\"Topic\",\"type\":\"string\"}},\"required\":[\"topic\"],\"title\":\"lookup_policyParams\",\"type\":\"object\"},\"type\":\"function\"},{\"name\":\"issue_refund\",\"description\":\"Issues a refund for an order.\",\"parameters\":{\"properties\":{\"order_id\":{\"title\":\"Order Id\",\"type\":\"string\"}},\"required\":[\"order_id\"],\"title\":\"issue_refundParams\",\"type\":\"object\"},\"type\":\"function\"}]"
+            }
+           },
+           {
+            "key": "gen_ai.output.messages",
+            "value": {
+             "stringValue": "[{\"role\":\"assistant\",\"parts\":[{\"id\":\"lookup_policy_0\",\"name\":\"lookup_policy\",\"arguments\":{\"topic\":\"returns\"},\"type\":\"tool_call\"}],\"finish_reason\":\"\"}]"
+            }
+           }
+          ],
+          "status": {},
+          "flags": 256
+         },
+         {
+          "traceId": "kci2lP8xT1TRdo+EsZTOhw==",
+          "spanId": "SZmASRHtFEk=",
+          "parentSpanId": "Ps1kNwNKNS4=",
+          "name": "generate_content scripted-support",
+          "kind": "SPAN_KIND_INTERNAL",
+          "startTimeUnixNano": "1795682737039591800",
+          "endTimeUnixNano": "1795682737039591800",
+          "attributes": [
+           {
+            "key": "gen_ai.operation.name",
+            "value": {
+             "stringValue": "generate_content"
+            }
+           },
+           {
+            "key": "gen_ai.request.model",
+            "value": {
+             "stringValue": "scripted-support"
+            }
+           },
+           {
+            "key": "gen_ai.agent.name",
+            "value": {
+             "stringValue": "support_agent"
+            }
+           },
+           {
+            "key": "gen_ai.conversation.id",
+            "value": {
+             "stringValue": "session-abc"
+            }
+           },
+           {
+            "key": "gcp.vertex.agent.event_id",
+            "value": {
+             "stringValue": "dede1ab4-20a7-4246-b03c-e46c08020315"
+            }
+           },
+           {
+            "key": "gcp.vertex.agent.invocation_id",
+            "value": {
+             "stringValue": "e-ddaaac18-a493-4f09-9208-7a245810fa9c"
+            }
+           },
+           {
+            "key": "gen_ai.provider.name",
+            "value": {
+             "stringValue": "gcp.gemini"
+            }
+           },
+           {
+            "key": "gen_ai.response.model",
+            "value": {
+             "stringValue": "scripted-support"
+            }
+           },
+           {
+            "key": "gen_ai.input.messages",
+            "value": {
+             "stringValue": "[{\"role\":\"user\",\"parts\":[{\"content\":\"Can I return the jacket I bought last week?\",\"type\":\"text\"}]},{\"role\":\"assistant\",\"parts\":[{\"id\":\"lookup_policy_0\",\"name\":\"lookup_policy\",\"arguments\":{\"topic\":\"returns\"},\"type\":\"tool_call\"}]},{\"role\":\"user\",\"parts\":[{\"id\":\"lookup_policy_0\",\"response\":{\"policy\":\"Returns are accepted within 14 days of delivery.\"},\"type\":\"tool_call_response\"}]}]"
+            }
+           },
+           {
+            "key": "gen_ai.system_instructions",
+            "value": {
+             "stringValue": "[{\"content\":\"Answer store questions. Use lookup_policy and issue_refund.\\n\\nYou are an agent. Your internal name is \\\"support_agent\\\".\",\"type\":\"text\"}]"
+            }
+           },
+           {
+            "key": "gen_ai.tool.definitions",
+            "value": {
+             "stringValue": "[{\"name\":\"lookup_policy\",\"description\":\"Returns the store policy for a topic.\",\"parameters\":{\"properties\":{\"topic\":{\"title\":\"Topic\",\"type\":\"string\"}},\"required\":[\"topic\"],\"title\":\"lookup_policyParams\",\"type\":\"object\"},\"type\":\"function\"},{\"name\":\"issue_refund\",\"description\":\"Issues a refund for an order.\",\"parameters\":{\"properties\":{\"order_id\":{\"title\":\"Order Id\",\"type\":\"string\"}},\"required\":[\"order_id\"],\"title\":\"issue_refundParams\",\"type\":\"object\"},\"type\":\"function\"}]"
+            }
+           },
+           {
+            "key": "gen_ai.output.messages",
+            "value": {
+             "stringValue": "[{\"role\":\"assistant\",\"parts\":[{\"content\":\"Yes! You have 30 days to return it.\",\"type\":\"text\"}],\"finish_reason\":\"\"}]"
+            }
+           }
+          ],
+          "status": {},
+          "flags": 256
+         },
+         {
+          "traceId": "kci2lP8xT1TRdo+EsZTOhw==",
+          "spanId": "Ps1kNwNKNS4=",
+          "parentSpanId": "vcCbX7l2bUA=",
+          "name": "invoke_agent support_agent",
+          "kind": "SPAN_KIND_INTERNAL",
+          "startTimeUnixNano": "1795682736976968200",
+          "endTimeUnixNano": "1795682737039591800",
+          "attributes": [
+           {
+            "key": "gen_ai.operation.name",
+            "value": {
+             "stringValue": "invoke_agent"
+            }
+           },
+           {
+            "key": "gen_ai.agent.description",
+            "value": {
+             "stringValue": ""
+            }
+           },
+           {
+            "key": "gen_ai.agent.name",
+            "value": {
+             "stringValue": "support_agent"
+            }
+           },
+           {
+            "key": "gen_ai.conversation.id",
+            "value": {
+             "stringValue": "session-abc"
+            }
+           }
+          ],
+          "status": {},
+          "flags": 256
+         },
+         {
+          "traceId": "kci2lP8xT1TRdo+EsZTOhw==",
+          "spanId": "vcCbX7l2bUA=",
+          "name": "invoke_workflow support_agent",
+          "kind": "SPAN_KIND_INTERNAL",
+          "startTimeUnixNano": "1795682736971324100",
+          "endTimeUnixNano": "1795682737039591800",
+          "attributes": [
+           {
+            "key": "gen_ai.operation.name",
+            "value": {
+             "stringValue": "invoke_workflow"
+            }
+           },
+           {
+            "key": "gen_ai.conversation.id",
+            "value": {
+             "stringValue": "session-abc"
+            }
+           },
+           {
+            "key": "gen_ai.workflow.name",
+            "value": {
+             "stringValue": "support_agent"
+            }
+           },
+           {
+            "key": "user.id",
+            "value": {
+             "stringValue": "user-42"
+            }
+           },
+           {
+            "key": "gen_ai.input.messages",
+            "value": {
+             "stringValue": "[{\"role\": \"user\", \"parts\": [{\"type\": \"text\", \"content\": \"Can I return the jacket I bought last week?\"}]}]"
+            }
+           },
+           {
+            "key": "gen_ai.output.messages",
+            "value": {
+             "stringValue": "[{\"role\": \"assistant\", \"parts\": [{\"type\": \"text\", \"content\": \"Yes! You have 30 days to return it.\"}]}]"
+            }
+           }
+          ],
+          "status": {},
+          "flags": 256
+         },
+         {
+          "traceId": "EuW1NVfKs8i91a9kmDhiqg==",
+          "spanId": "g8GGebw/yQM=",
+          "parentSpanId": "HHkd7SEjbRw=",
+          "name": "generate_content scripted-support",
+          "kind": "SPAN_KIND_INTERNAL",
+          "startTimeUnixNano": "1795682737039591800",
+          "endTimeUnixNano": "1795682737039591800",
+          "attributes": [
+           {
+            "key": "gen_ai.operation.name",
+            "value": {
+             "stringValue": "generate_content"
+            }
+           },
+           {
+            "key": "gen_ai.request.model",
+            "value": {
+             "stringValue": "scripted-support"
+            }
+           },
+           {
+            "key": "gen_ai.agent.name",
+            "value": {
+             "stringValue": "support_agent"
+            }
+           },
+           {
+            "key": "gen_ai.conversation.id",
+            "value": {
+             "stringValue": "session-abc"
+            }
+           },
+           {
+            "key": "gcp.vertex.agent.event_id",
+            "value": {
+             "stringValue": "fcd23054-b2be-41a5-9ecc-414c176d9fc4"
+            }
+           },
+           {
+            "key": "gcp.vertex.agent.invocation_id",
+            "value": {
+             "stringValue": "e-4a3d0f4d-e0b8-429a-834c-a32a6be3a1d4"
+            }
+           },
+           {
+            "key": "gen_ai.provider.name",
+            "value": {
+             "stringValue": "gcp.gemini"
+            }
+           },
+           {
+            "key": "gen_ai.response.model",
+            "value": {
+             "stringValue": "scripted-support"
+            }
+           },
+           {
+            "key": "gen_ai.input.messages",
+            "value": {
+             "stringValue": "[{\"role\":\"user\",\"parts\":[{\"content\":\"Can I return the jacket I bought last week?\",\"type\":\"text\"}]},{\"role\":\"assistant\",\"parts\":[{\"id\":\"lookup_policy_0\",\"name\":\"lookup_policy\",\"arguments\":{\"topic\":\"returns\"},\"type\":\"tool_call\"}]},{\"role\":\"user\",\"parts\":[{\"id\":\"lookup_policy_0\",\"response\":{\"policy\":\"Returns are accepted within 14 days of delivery.\"},\"type\":\"tool_call_response\"}]},{\"role\":\"assistant\",\"parts\":[{\"content\":\"Yes! You have 30 days to return it.\",\"type\":\"text\"}]},{\"role\":\"user\",\"parts\":[{\"content\":\"Ok, please refund order 1042.\",\"type\":\"text\"}]}]"
+            }
+           },
+           {
+            "key": "gen_ai.system_instructions",
+            "value": {
+             "stringValue": "[{\"content\":\"Answer store questions. Use lookup_policy and issue_refund.\\n\\nYou are an agent. Your internal name is \\\"support_agent\\\".\",\"type\":\"text\"}]"
+            }
+           },
+           {
+            "key": "gen_ai.tool.definitions",
+            "value": {
+             "stringValue": "[{\"name\":\"lookup_policy\",\"description\":\"Returns the store policy for a topic.\",\"parameters\":{\"properties\":{\"topic\":{\"title\":\"Topic\",\"type\":\"string\"}},\"required\":[\"topic\"],\"title\":\"lookup_policyParams\",\"type\":\"object\"},\"type\":\"function\"},{\"name\":\"issue_refund\",\"description\":\"Issues a refund for an order.\",\"parameters\":{\"properties\":{\"order_id\":{\"title\":\"Order Id\",\"type\":\"string\"}},\"required\":[\"order_id\"],\"title\":\"issue_refundParams\",\"type\":\"object\"},\"type\":\"function\"}]"
+            }
+           },
+           {
+            "key": "gen_ai.output.messages",
+            "value": {
+             "stringValue": "[{\"role\":\"assistant\",\"parts\":[{\"content\":\"Done. Your refund for order 1042 has been processed.\",\"type\":\"text\"}],\"finish_reason\":\"\"}]"
+            }
+           }
+          ],
+          "status": {},
+          "flags": 256
+         },
+         {
+          "traceId": "EuW1NVfKs8i91a9kmDhiqg==",
+          "spanId": "HHkd7SEjbRw=",
+          "parentSpanId": "197d0uWgfE8=",
+          "name": "invoke_agent support_agent",
+          "kind": "SPAN_KIND_INTERNAL",
+          "startTimeUnixNano": "1795682737039591800",
+          "endTimeUnixNano": "1795682737039591800",
+          "attributes": [
+           {
+            "key": "gen_ai.operation.name",
+            "value": {
+             "stringValue": "invoke_agent"
+            }
+           },
+           {
+            "key": "gen_ai.agent.description",
+            "value": {
+             "stringValue": ""
+            }
+           },
+           {
+            "key": "gen_ai.agent.name",
+            "value": {
+             "stringValue": "support_agent"
+            }
+           },
+           {
+            "key": "gen_ai.conversation.id",
+            "value": {
+             "stringValue": "session-abc"
+            }
+           }
+          ],
+          "status": {},
+          "flags": 256
+         },
+         {
+          "traceId": "EuW1NVfKs8i91a9kmDhiqg==",
+          "spanId": "197d0uWgfE8=",
+          "name": "invoke_workflow support_agent",
+          "kind": "SPAN_KIND_INTERNAL",
+          "startTimeUnixNano": "1795682737039591800",
+          "endTimeUnixNano": "1795682737039591800",
+          "attributes": [
+           {
+            "key": "gen_ai.operation.name",
+            "value": {
+             "stringValue": "invoke_workflow"
+            }
+           },
+           {
+            "key": "gen_ai.conversation.id",
+            "value": {
+             "stringValue": "session-abc"
+            }
+           },
+           {
+            "key": "gen_ai.workflow.name",
+            "value": {
+             "stringValue": "support_agent"
+            }
+           },
+           {
+            "key": "user.id",
+            "value": {
+             "stringValue": "user-42"
+            }
+           },
+           {
+            "key": "gen_ai.input.messages",
+            "value": {
+             "stringValue": "[{\"role\": \"user\", \"parts\": [{\"type\": \"text\", \"content\": \"Ok, please refund order 1042.\"}]}]"
+            }
+           },
+           {
+            "key": "gen_ai.output.messages",
+            "value": {
+             "stringValue": "[{\"role\": \"assistant\", \"parts\": [{\"type\": \"text\", \"content\": \"Done. Your refund for order 1042 has been processed.\"}]}]"
+            }
+           }
+          ],
+          "status": {},
+          "flags": 256
+         }
+        ],
+        "schemaUrl": "https://opentelemetry.io/schemas/1.36.0"
+       }
+      ]
+     }
+    ]
+   }
+  }
+ ]
+}
