@@ -187,7 +187,7 @@ class AgnostToolSpanObserver(BaseObserver):
 
   <section id="upstream">
     <h2>Why not wait for Pipecat?</h2>
-    <p class="sub">Pipecat has an open pull request that adds <code>function_call</code> spans: <a href="https://github.com/pipecat-ai/pipecat/pull/4266">#4266</a>, opened 9 Apr 2026 by the maker of finchvox, a Pipecat observability tool. As of 27 Nov it has no review, now conflicts with main, and has waited 232 days. Two things matter for Agnost if it ever lands: it names attributes <code>tool.function_name</code>, <code>tool.arguments</code> and <code>tool.result</code>, not the <code>gen_ai.tool.*</code> names your ingest reads for other frameworks, so it needs a mapping; and its notes say the span for an async function call ends before the final result arrives. The observer works on the Pipecat release your customers run today.</p>
+    <p class="sub">Pipecat has an open pull request that adds <code>function_call</code> spans: <a href="https://github.com/pipecat-ai/pipecat/pull/4266">#4266</a>, opened 9 Apr 2026 by the main developer of finchvox, an open-source observability tool for Pipecat. As of 27 Nov it has no review, now conflicts with main, and has waited 232 days. Two things matter for Agnost if it ever lands: it names attributes <code>tool.function_name</code>, <code>tool.arguments</code> and <code>tool.result</code>, not the <code>gen_ai.tool.*</code> names your ingest reads for other frameworks, so it needs a mapping; and its notes say the span for an async function call ends before the final result arrives. The observer works on the Pipecat release your customers run today.</p>
   </section>
 
   <section id="reproduce">
