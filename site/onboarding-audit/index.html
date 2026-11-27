@@ -127,7 +127,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
       <div class="tags"><span class="tag imp">discovery</span><span class="tag fix">guide drafted</span></div>
       <h3>The skill has a Mastra recipe, but the docs have no Mastra page</h3>
       <p>Mastra's own docs list Langfuse, LangSmith, Arize, Braintrust, Laminar and Datadog. A developer searching "Mastra Agnost" finds nothing on docs.agnost.ai. Mastra's exporter has a <code>custom</code> provider (headers, protocol, <code>endpoints.traces</code>), so no new package is needed.</p>
-      <p class="ev">Fix: a docs page drafted from the exporter's source types (<code>observability/otel-exporter/src/types.ts</code>). Marked untested until it runs against a real org.</p>
+      <p class="ev">Fix: a docs page, tested locally on Mastra 1.86.0 with otel-exporter 1.6.2 and a scripted model, exporting to a stand-in receiver: 15 spans arrive with the org header; passing <code>threadId</code> sets <code>gen_ai.conversation.id</code> on every span; the <code>chat</code> spans carry the messages, but the root <code>invoke_agent</code> span carries none, so it's worth confirming the Mastra parser reads the child spans. The skill's Mastra recipe also sends <code>X-Agnost-Project-ID</code> where the docs use <code>X-Agnost-Org-ID</code>.</p>
     </div></div>
 
     <div class="finding"><div class="num">07</div><div>
