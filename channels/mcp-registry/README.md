@@ -30,3 +30,23 @@ Keep `key.pem` out of git. The registry is in preview; its docs warn of possible
 
 Why it matters: MCP clients and directories read the registry to discover servers, and two direct competitors are
 already there. The listing points developers at the same OAuth flow the docs describe.
+
+## Also: awesome-remote-mcp-servers (4,227 stars, updated 26 Nov 2026)
+github.com/punkpeye/awesome-remote-mcp-servers is the list for hosted MCP servers (the bigger awesome-mcp-servers
+only takes servers with a public repo). Its Monitoring section has Sentry; no AI-agent observability vendor is listed
+(no Langfuse, Braintrust, Raindrop or Arize), so Agnost would be the first.
+
+Requirements (from its CONTRIBUTING.md, 27 Nov 2026): public URL that answers MCP `initialize` (CI checks), usable
+by anyone with public sign-up, Streamable HTTP or SSE, and a Glama connector listing (glama.ai/mcp/connectors) for the
+required badge. One `initialize` request each, 27 Nov: mcp.agnost.ai/mcp answers 401 with
+`WWW-Authenticate: Bearer ... resource_metadata="https://mcp.agnost.ai/.well-known/oauth-protected-resource"`, the
+same shape as Sentry's listed endpoint, so it should pass the same way. I couldn't confirm a Glama listing (the search
+page renders with scripts); check that first.
+
+Entry for the Monitoring section (alphabetical; replace NAMESPACE/NAME with the Glama connector id once listed):
+
+```markdown
+- [Agnost AI](https://agnost.ai) `https://mcp.agnost.ai/mcp`
+  [![Agnost AI MCP connector](https://glama.ai/mcp/connectors/NAMESPACE/NAME/badges/score.svg)](https://glama.ai/mcp/connectors/NAMESPACE/NAME)
+  🔐 - Query production AI agent conversations, failing tools and failure patterns, and track fixes.
+```
