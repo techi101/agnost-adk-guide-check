@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PR 2650 review</title>
+<meta name="description" content="I ran the adk-docs integration-review checklist on Agnost's ADK docs PR #2650 and measured the review queue it is waiting in.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..700&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#EDF0EA; --paper-2:#E3E8E1; --ink:#18201D; --muted:#56635E; --line:#CCD4CE;
+  --cobalt:#2747C9; --cobalt-bg:#E3E8FA; --wine:#A3204F; --wine-bg:#F6E3EA; --amber:#8A5A00; --amber-bg:#F6ECD6;
+  --win:#FBFCFA; --win-bar:#F1F4F0;
+  --display:"Bricolage Grotesque",Georgia,serif; --text:"Geist",ui-sans-serif,sans-serif; --mono:"Geist Mono",ui-monospace,monospace;
+  --step-0:clamp(1rem,.96rem + .2vw,1.0625rem); --step-1:clamp(1.15rem,1.05rem + .5vw,1.35rem);
+  --step-3:clamp(1.9rem,1.4rem + 2.4vw,3.1rem);
+  --ease-expo:cubic-bezier(.16,1,.3,1); --ease-out:cubic-bezier(.23,1,.32,1);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;overflow-x:hidden;background:var(--paper);color:var(--ink);font:400 var(--step-0)/1.6 var(--text);font-optical-sizing:auto}
+a{color:var(--cobalt);text-underline-offset:3px}
+a:focus-visible{outline:2px solid var(--cobalt);outline-offset:3px;border-radius:4px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+header.top{display:flex;justify-content:space-between;align-items:center;padding:22px 0;font-size:.95rem;color:var(--muted)}
+header.top b{color:var(--ink);font-weight:600}
+header.top nav{display:flex;gap:20px}
+header.top nav a{color:var(--muted);text-decoration:none}
+header.top nav a:hover{color:var(--ink)}
+.hero{padding:56px 0 40px}
+h1{font:600 var(--step-3)/1.06 var(--display);letter-spacing:-.025em;margin:0 0 20px;max-width:20ch;text-wrap:balance}
+.lede{font-size:var(--step-1);line-height:1.5;color:var(--muted);max-width:62ch;margin:0 0 28px}
+.lede strong{color:var(--ink);font-weight:500}
+.cta{display:flex;gap:12px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border-radius:999px;font-weight:500;text-decoration:none;font-size:.98rem;transition:transform 140ms var(--ease-out)}
+.btn:active{transform:scale(.97)}
+.btn.dark{background:var(--ink);color:var(--paper)}
+.btn.soft{background:var(--paper-2);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line)}
+
+.stage{position:relative;margin-top:8px;border-radius:18px;padding:44px 40px 0;overflow:hidden;background:#C9D3C8;isolation:isolate}
+.stage::before{content:"";position:absolute;inset:0;z-index:-1;opacity:.5;
+  background:repeating-radial-gradient(circle at 85% 10%,transparent 0 22px,rgb(24 32 29/.07) 22px 23px)}
+.window{background:var(--win);border-radius:12px 12px 0 0;overflow:hidden;box-shadow:0 0 0 1px rgb(24 32 29/.10),0 40px 80px -30px rgb(24 32 29/.45);animation:rise 900ms var(--ease-expo) both}
+@keyframes rise{from{opacity:0;transform:translateY(28px)}}
+.bar{display:flex;align-items:center;gap:6px;padding:10px 14px;background:var(--win-bar);border-bottom:1px solid var(--line);font:500 .8rem var(--mono);color:var(--muted)}
+.bar i{width:10px;height:10px;border-radius:50%;background:#D3D9D4;flex:none}
+.bar span{margin-left:10px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.panes{display:grid;grid-template-columns:1.15fr 1fr}
+.pane{padding:20px 22px 26px;min-width:0}
+.pane + .pane{border-left:1px solid var(--line)}
+.pane h2{font:600 1rem/1.3 var(--text);margin:0 0 4px}
+.pane p.sub{margin:0 0 14px;color:var(--muted);font-size:.88rem}
+.score{display:flex;align-items:baseline;gap:10px;margin:2px 0 14px}
+.score b{font:600 3.2rem/1 var(--display);letter-spacing:-.03em}
+.score span{color:var(--muted);font-size:.92rem}
+.checks{list-style:none;margin:0;padding:0;font-size:.88rem}
+.checks li{display:grid;grid-template-columns:20px 1fr;gap:8px;padding:7px 0;border-top:1px dashed #E1E6E1}
+.checks li:first-child{border-top:0}
+.checks .ok{color:var(--cobalt);font-weight:600}
+.checks .warn{color:var(--amber);font-weight:600}
+.checks small{display:block;color:var(--muted);font-size:.8rem}
+.queue{list-style:none;margin:0;padding:0}
+.queue li{padding:9px 0;border-top:1px dashed #E1E6E1;font-size:.86rem}
+.queue li:first-child{border-top:0}
+.queue .row{display:flex;justify-content:space-between;gap:10px}
+.queue .row b{font-weight:500}
+.queue .row span{font-family:var(--mono);font-size:.8rem;color:var(--muted);white-space:nowrap}
+.queue li.us .row b{color:var(--cobalt)}
+.track{height:6px;border-radius:3px;background:var(--paper-2);margin-top:6px;overflow:hidden}
+.track i{display:block;height:100%;border-radius:3px;background:#8D9B94}
+.queue li.us .track i{background:var(--cobalt)}
+.legend{padding:12px 22px;border-top:1px solid var(--line);font-size:.82rem;color:var(--muted);background:var(--win-bar)}
+
+section{padding:72px 0 0}
+section h2.h{font:600 clamp(1.5rem,1.2rem + 1.2vw,2.1rem)/1.15 var(--display);letter-spacing:-.02em;margin:0 0 14px;max-width:30ch}
+.prose{max-width:68ch}
+.prose p{margin:0 0 14px}
+.prose li{margin-bottom:8px}
+code{font:400 .88em var(--mono);background:var(--paper-2);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
+pre code{background:none;padding:0;overflow-wrap:normal}
+pre{margin:18px 0 0;padding:18px 20px;border-radius:12px;background:#18201D;color:#E4EAE5;font:400 .84rem/1.6 var(--mono);overflow-x:auto;max-width:min(820px,100%)}
+pre .add{color:#9EC1FF}
+pre .cm{color:#8C9A94}
+.tablewrap{overflow-x:auto;margin-top:22px;border-radius:12px;box-shadow:0 0 0 1px var(--line);background:var(--win)}
+table{border-collapse:collapse;width:100%;min-width:680px;font-size:.88rem}
+th,td{padding:11px 12px;text-align:left;border-bottom:1px solid #E3E8E3;vertical-align:top}
+th{font-weight:500;color:var(--muted);background:var(--win-bar)}
+td.num{font-family:var(--mono);font-size:.84rem;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+tr.us td{background:#F1F3FC}
+.note{font-size:.88rem;color:var(--muted);margin-top:10px;max-width:72ch}
+.cols{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;margin-top:8px}
+.cols h3{font:600 1.05rem/1.3 var(--text);margin:0 0 6px}
+.cols p{margin:0;color:var(--muted);font-size:.96rem}
+footer{margin:96px 0 0;padding:28px 0 40px;border-top:1px solid var(--line);color:var(--muted);font-size:.92rem}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+@media (max-width:860px){
+  .panes{grid-template-columns:1fr}
+  .pane + .pane{border-left:0;border-top:1px solid var(--line)}
+  .stage{padding:20px 12px 0;border-radius:14px}
+  .cols{grid-template-columns:1fr;gap:22px}
+}
+@media (max-width:520px){
+  .wrap{padding:0 16px}
+  header.top nav{display:none}
+  .hero{padding:32px 0 28px}
+  section{padding-top:56px}
+  .score b{font-size:2.6rem}
+  .tablewrap{overflow:visible}
+  table{min-width:0}
+  thead{display:none}
+  table,tbody,tr,td{display:block;width:100%}
+  tr{padding:12px 14px;border-bottom:1px solid #E3E8E3}
+  tr:last-child{border-bottom:0}
+  td{border:0;padding:2px 0}
+  td:first-child{font-weight:600}
+  td:nth-child(2){font-family:var(--mono);font-size:.84rem;color:var(--cobalt)}
+  td.num{white-space:normal}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span><b>PR 2650 review</b> for Agnost AI</span>
+    <nav aria-label="Page">
+      <a href="#checklist">Checklist</a>
+      <a href="#queue">Queue</a>
+      <a href="#next">Next</a>
+      <a href="/">ADK guide check</a>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <h1>Your ADK docs page is ready. The queue is the problem.</h1>
+    <p class="lede">I ran the adk-docs repo's own <strong>integration-review checklist</strong> on <a href="https://github.com/google/adk-docs/pull/2650">PR #2650</a> (head <code>65dc682</code>) and pulled the repo's merge history on 27 Nov 2026. The page scores <strong>98 of 100</strong>. It is waiting behind <strong>110 open integration pages</strong>, and no outside company's page has been merged since 8 Sep.</p>
+    <div class="cta">
+      <a class="btn dark" href="#checklist">See the checklist</a>
+      <a class="btn soft" href="https://github.com/techi101/agnost-adk-guide-check/tree/main/pr2650">Raw data</a>
+    </div>
+  </div>
+
+  <div class="stage">
+    <div class="window" role="img" aria-label="Review summary: score 98 of 100 with one medium finding, and Agnost's PR shown in a queue with four other observability pages that have waited longer.">
+      <div class="bar"><i></i><i></i><i></i><span>google/adk-docs · pull/2650 · integration-review v0.2.0</span></div>
+      <div class="panes">
+        <div class="pane">
+          <h2>Checklist result</h2>
+          <p class="sub">Scoring from the skill: start at 100, minus 2 per medium finding.</p>
+          <div class="score"><b>98</b><span>of 100 · 1 medium finding · 0 blocking</span></div>
+          <ul class="checks">
+            <li><span class="ok">✓</span><span>Frontmatter, H1, language tag<small>61 character description, tags already used by 10 pages</small></span></li>
+            <li><span class="ok">✓</span><span>Observability template<small>Same section order as datadog.md</small></span></li>
+            <li><span class="ok">✓</span><span>Code on ADK 2.15.1 (latest release)<small>user.id, input, answer and conversation id all on the root span</small></span></li>
+            <li><span class="ok">✓</span><span>Links, icon, CLA, CI checks<small>6 of 6 links return 200, icon is a real 7.4 KB PNG</small></span></li>
+            <li><span class="warn">!</span><span>No ADK version stated<small>On ADK 1.39.1 the answer lands on a child span</small></span></li>
+          </ul>
+        </div>
+        <div class="pane">
+          <h2>Observability pages waiting</h2>
+          <p class="sub">Days open on 27 Nov 2026, same tag, same queue.</p>
+          <ul class="queue">
+            <li><div class="row"><b>TraceRoot #2264</b><span>64 days</span></div><div class="track"><i style="width:100%"></i></div></li>
+            <li><div class="row"><b>LangSmith #2356</b><span>51 days</span></div><div class="track"><i style="width:79.7%"></i></div></li>
+            <li><div class="row"><b>Laminar #2369</b><span>46 days</span></div><div class="track"><i style="width:71.9%"></i></div></li>
+            <li><div class="row"><b>Dash0 #2588</b><span>16 days</span></div><div class="track"><i style="width:25%"></i></div></li>
+            <li class="us"><div class="row"><b>Agnost AI #2650</b><span>6 days</span></div><div class="track"><i style="width:9.4%"></i></div></li>
+          </ul>
+        </div>
+      </div>
+      <div class="legend">Independent review. Not affiliated with Agnost AI or Google. Nothing was posted on the PR.</div>
+    </div>
+  </div>
+
+  <section id="checklist">
+    <h2 class="h">What a maintainer's checklist finds</h2>
+    <div class="prose">
+      <p>The adk-docs repo ships a review skill at <code>.agents/skills/integration-review</code>. It is the checklist maintainers point contributors to, with fixed risk tiers and a score. I followed it step by step against the PR's head commit.</p>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Check</th><th>Result</th><th>Evidence</th></tr></thead>
+        <tbody>
+          <tr><td>Frontmatter</td><td>Pass</td><td>All four fields. <code>observability</code> and <code>evaluation</code> already exist in the catalog (LangWatch, Phoenix, Galileo and 7 more use them).</td></tr>
+          <tr><td>H1 and language tag</td><td>Pass</td><td><code># Agnost AI observability for ADK</code>, single line Python span.</td></tr>
+          <tr><td>Section order</td><td>Pass</td><td>Overview, Prerequisites, Installation, Setup, Observe, Support and Resources. Identical to <code>datadog.md</code>.</td></tr>
+          <tr><td>Code on the released ADK</td><td>Pass</td><td>The <code>AgnostPlugin</code> in the PR is character for character the plugin I ran on ADK 2.15.1 with a local OTLP receiver. The root <code>invoke_workflow</code> span got user, input, answer and conversation id. <a href="/">Run details</a>.</td></tr>
+          <tr><td>Links and assets</td><td>Pass</td><td>docs.agnost.ai/google-adk, docs.agnost.ai, app.agnost.ai, agnost.ai, /observability/traces/, /plugins/ all return 200. No mkdocs.yml edit, which is correct for auto discovered pages.</td></tr>
+          <tr><td>Style</td><td>Pass</td><td>No em dashes, "ADK" used correctly, no sentence starts with code.</td></tr>
+          <tr><td>CLA and CI</td><td>Pass</td><td>CLA signed after the bot's first comment, <code>check-changes</code> and <code>header-check</code> green. The Netlify preview is still waiting for a maintainer to approve it.</td></tr>
+          <tr><td>Maturity signals</td><td>Pass</td><td>The <code>agnost</code> package has 15 PyPI releases since Sep 2025 and about 16,700 downloads in the last month (pypistats, 27 Nov).</td></tr>
+          <tr><td>ADK version</td><td><b>Medium</b></td><td>The page never says which ADK it targets. On ADK 1.39.1 the root span is <code>invocation</code> and the plugin writes the answer to a child span, Agnost's own ADK guide says transcripts are built from the root span, so on 1.x the root carries no answer. I tested with a local receiver, not Agnost's dashboard.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="prose">
+      <p style="margin-top:22px">The fix is one sentence under the Installation block, in the review's suggestion format:</p>
+    </div>
+<pre><code><span class="cm">docs/integrations/agnost.md:42</span>
+<span class="add">+ This page is written for ADK 2.x and was tested on 2.15.1. On ADK 1.x,
++ see the [Agnost AI ADK guide](https://docs.agnost.ai/google-adk).</span></code></pre>
+    <p class="note">The second line only helps if the Agnost guide covers 1.x. My <a href="https://github.com/techi101/agnost-adk-guide-check/blob/main/check/agnost_adk_plugin.py">plugin fix</a> handles both versions by saving the root span at the start of each turn.</p>
+  </section>
+
+  <section id="queue">
+    <h2 class="h">Why it may sit for weeks</h2>
+    <div class="prose">
+      <p>I pulled every open PR in google/adk-docs and every merged PR that touched <code>docs/integrations/</code>.</p>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Measure</th><th>Value</th><th>How</th></tr></thead>
+        <tbody>
+          <tr><td>Open PRs adding a new integration page</td><td class="num">110</td><td>New <code>docs/integrations/*.md</code> file, out of 230 open PRs</td></tr>
+          <tr><td>Median time open</td><td class="num">29 days</td><td>Oldest is 148 days</td></tr>
+          <tr><td>Open more than 30 days</td><td class="num">52</td><td></td></tr>
+          <tr><td>Last outside company page merged</td><td class="num">8 Sep 2026</td><td>CopilotKit, #2203. Earlier ones (Restate, StackOne, Temporal, Cisco AI Defense, Latitude) were merged by one maintainer between Feb and Jul.</td></tr>
+          <tr><td>Recent new pages</td><td class="num">By maintainers</td><td>LangChain, LangGraph and CrewAI pages opened 22 Nov by a repo maintainer</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">These counts come from <code>gh pr list</code> on 27 Nov 2026. A PR that never merged is not proof of a policy. It only shows the queue has not moved for outside pages since September.</p>
+  </section>
+
+  <section id="next">
+    <h2 class="h">What I would do in week one</h2>
+    <div class="cols">
+      <div>
+        <h3>Make it easy to approve</h3>
+        <p>Add the version line, then post a short self review in the PR with the checklist result and "verified against v2.15.1". A maintainer working through 110 pages can approve a pre-checked one in minutes.</p>
+      </div>
+      <div>
+        <h3>Don't wait for the merge</h3>
+        <p>The same guide already lives on docs.agnost.ai/google-adk. Add the version note and a 1.x variant of the plugin there now, so 1.x users get answers on the root span today.</p>
+      </div>
+      <div>
+        <h3>Check it every Monday</h3>
+        <p>A small scheduled check on the PR and the queue data above can flag a maintainer comment or the first outside merge, so the PR gets a reply the same day.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <div class="wrap">
+    <span>Nitesh Kumar Yadav · NSUT Delhi · 27 Nov 2026</span>
+    <span><a href="https://github.com/techi101/agnost-adk-guide-check/tree/main/pr2650">Data and checklist copy on GitHub</a></span>
+  </div>
+</footer>
+</body>
+</html>
