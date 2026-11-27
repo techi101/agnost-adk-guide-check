@@ -126,7 +126,8 @@ footer a{color:var(--ink-2)}
 
 @media (max-width:980px){
   .vbody{grid-template-columns:1fr}
-  .side{border-left:0;border-top:1px solid var(--line);flex-direction:row;flex-wrap:wrap;align-items:center}
+  .side{border-left:0;border-bottom:1px solid var(--line);flex-direction:row;flex-wrap:wrap;align-items:center;order:-1;gap:12px 28px}
+  .count{font-size:52px}
   .split{grid-template-columns:1fr;gap:24px}
 }
 @media (max-width:640px){
@@ -134,7 +135,7 @@ footer a{color:var(--ink-2)}
   .hero{padding:48px 16px 8px}
   .viewer{margin:36px 12px 0}
   .row{grid-template-columns:1fr;gap:8px;padding:12px 14px}
-  .hide-s{display:none}.u{flex-basis:46px}.l{flex-basis:36px}.e{flex-basis:76px}
+  .hide-s{display:none}.t .tag{display:none}.side .key{display:none}.side>a{display:none}.u{flex-basis:46px}.l{flex-basis:36px}.e{flex-basis:86px}
   .blk{font-size:10.5px;padding:0 7px}
   .t .a,.t .b{left:7px;right:7px}
   .vhead{padding:12px 14px}
