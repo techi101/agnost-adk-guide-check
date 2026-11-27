@@ -1,8 +1,8 @@
 # List Agnost's hosted MCP server in the official MCP Registry
 
 Checked 27 Nov 2026: registry.modelcontextprotocol.io has no Agnost entry (a search for "agnost" only returns
-unrelated "agnostic" servers). Braintrust (`io.github.braintrustdata/braintrust`) and Raindrop (`io.raindrop/mcp`)
-are listed. mcp.agnost.ai/mcp is live (401 without auth), streamable HTTP with OAuth 2.1 dynamic client registration
+unrelated "agnostic" servers). Braintrust's official server (`io.github.braintrustdata/braintrust`) is listed;
+Langfuse appears via community servers. (Note: `io.raindrop/mcp` is the Raindrop.io bookmarks app, not Raindrop the AI tool.) mcp.agnost.ai/mcp is live (401 without auth), streamable HTTP with OAuth 2.1 dynamic client registration
 (docs.agnost.ai/agnost-mcp-server), so the entry needs no keys or headers, only the URL.
 
 `server.json` in this folder validates against the official schema
@@ -28,8 +28,7 @@ mcp-publisher publish
 
 Keep `key.pem` out of git. The registry is in preview; its docs warn of possible data resets before general availability.
 
-Why it matters: MCP clients and directories read the registry to discover servers, and two direct competitors are
-already there. The listing points developers at the same OAuth flow the docs describe.
+Why it matters: MCP clients and directories read the registry to discover servers, and Braintrust is already there. The listing points developers at the same OAuth flow the docs describe.
 
 ## Also: awesome-remote-mcp-servers (4,227 stars, updated 26 Nov 2026)
 github.com/punkpeye/awesome-remote-mcp-servers is the list for hosted MCP servers (the bigger awesome-mcp-servers

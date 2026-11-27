@@ -158,8 +158,8 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
     </div></div>
     <div class="finding"><div class="num">11</div><div>
       <div class="tags"><span class="tag imp">distribution</span><span class="tag fix">server.json ready</span></div>
-      <h3>Your hosted MCP server isn't in the official MCP Registry. Braintrust's and Raindrop's are.</h3>
-      <p>mcp.agnost.ai/mcp is live with OAuth 2.1 and dynamic client registration, which makes it an easy listing: no keys, just the URL. The <a href="https://registry.modelcontextprotocol.io/v0/servers?search=agnost">registry search</a> returns only unrelated "agnostic" servers; Braintrust (<code>io.github.braintrustdata/braintrust</code>) and Raindrop (<code>io.raindrop/mcp</code>) are listed.</p>
+      <h3>Your hosted MCP server isn't in the official MCP Registry. Braintrust's is.</h3>
+      <p>mcp.agnost.ai/mcp is live with OAuth 2.1 and dynamic client registration, which makes it an easy listing: no keys, just the URL. The <a href="https://registry.modelcontextprotocol.io/v0/servers?search=agnost">registry search</a> returns only unrelated "agnostic" servers. Braintrust's official server (<code>io.github.braintrustdata/braintrust</code>) is listed; Langfuse appears through community-built servers.</p>
       <p class="ev">Fix: a <code>server.json</code> for <code>ai.agnost/mcp</code> that validates against the registry's official schema with 0 errors, plus the publish steps from the registry's docs (an Ed25519 key, one DNS TXT record on agnost.ai, two commands). About 15 minutes for whoever holds the DNS.</p>
       <p class="ev">Same gap on <a href="https://github.com/punkpeye/awesome-remote-mcp-servers">awesome-remote-mcp-servers</a> (4,227 stars, updated 26 Nov): its Monitoring section lists Sentry but no AI-agent observability vendor at all. Your endpoint answers the MCP handshake with the same 401 plus OAuth metadata as Sentry's listed one. The entry is drafted in the list's three-line format; it needs a Glama connector listing first for the required badge.</p>
     </div></div>
