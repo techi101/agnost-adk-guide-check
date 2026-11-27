@@ -126,10 +126,10 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
     </div></div>
 
     <div class="finding"><div class="num">06</div><div>
-      <div class="tags"><span class="tag imp">discovery</span><span class="tag fix">guide drafted</span></div>
-      <h3>The skill has a Mastra recipe, but the docs have no Mastra page</h3>
-      <p>Mastra's own docs list Langfuse, LangSmith, Arize, Braintrust, Laminar and Datadog. A developer searching "Mastra Agnost" finds nothing on docs.agnost.ai. Mastra's exporter has a <code>custom</code> provider (headers, protocol, <code>endpoints.traces</code>), so no new package is needed.</p>
-      <p class="ev">Fix: a docs page, tested locally on Mastra 1.86.0 with otel-exporter 1.6.2 and a scripted model, exporting to a stand-in receiver: 15 spans arrive with the org header; passing <code>threadId</code> sets <code>gen_ai.conversation.id</code> on every span; the <code>chat</code> spans carry the messages, but the root <code>invoke_agent</code> span carries none, so it's worth confirming the Mastra parser reads the child spans. The skill's Mastra recipe also sends <code>X-Agnost-Project-ID</code> where the docs use <code>X-Agnost-Org-ID</code>.</p>
+      <div class="tags"><span class="tag imp">discovery</span><span class="tag fix">listing drafted</span></div>
+      <h3>Vercel's AI SDK docs list Agnost. Mastra's and CrewAI's don't.</h3>
+      <p>You have docs pages for both (docs.agnost.ai/mastra and /crewai), and the Vercel AI SDK already has an <code>agnost.mdx</code> in its observability providers. But Mastra's integrations list has 11 entries (Arize, Arthur, Braintrust, Confident AI, Datadog, Laminar, Langfuse, LangSmith, PostHog, Sentry, OpenTelemetry) and CrewAI's observability docs list 16 vendors (Braintrust, Langfuse, Arize Phoenix, Galileo and more), with no Agnost on either. A developer browsing their framework's docs for a monitoring tool never sees you.</p>
+      <p class="ev">Fix: a Mastra listing page in their <code>integrations/observability</code> format, built from a setup I tested locally on Mastra 1.86.0 with otel-exporter 1.6.2 (15 spans arrive with the org header; <code>threadId</code> sets <code>gen_ai.conversation.id</code> on every span). CrewAI next, from your OpenLit page. (An earlier version of this finding said you had no Mastra page; you do, so I corrected it.)</p>
     </div></div>
 
     <div class="finding"><div class="num">07</div><div>
@@ -196,7 +196,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
         <tr><td>Pipecat tool-call observer (finding 12)</td><td>Skill patch 8 + docs section + one-command test</td><td>Tested on Pipecat 1.17.0: 5 of 10 tool calls recoverable before, 10 of 10 after</td></tr>
         <tr><td>ADK guide plugin for ADK 1.x and 2.x (finding 8)</td><td>Drop-in docs section</td><td>Tested offline on ADK 2.15.1 and 1.39.1 with a local OTLP receiver</td></tr>
         <tr><td>llms.txt (finding 5)</td><td>11 lines grouped by section</td><td>Ready to paste</td></tr>
-        <tr><td>Mastra docs page (finding 6)</td><td>Markdown draft</td><td>Needs one run against a real org</td></tr>
+        <tr><td>Mastra integrations-list page (finding 6)</td><td>MDX draft from the tested setup</td><td>Tested locally on Mastra 1.86.0; needs one run against a real org</td></tr>
         <tr><td>Pipecat listing (finding 7)</td><td>MDX page + docs.json line</td><td>API names checked against Pipecat v1.17.0</td></tr>
         <tr><td>"Agnost AI vs voice testing tools" post (finding 10)</td><td>Blog draft: what simulation platforms and Agnost each do best, pricing units side by side</td><td>Cekura, Coval, Roark, Bluejay and Hamming pricing pages read 27 Nov 2026</td></tr>
         <tr><td>"Agnost AI vs Raindrop" post (finding 10)</td><td>Blog draft in the existing comparison format</td><td>Agnost prices and features checked against agnost.ai; Raindrop facts from its homepage</td></tr>
