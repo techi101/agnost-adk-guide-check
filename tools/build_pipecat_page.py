@@ -1,103 +1,203 @@
-import html, json, re
+"""Builds site/pipecat-tool-calls/index.html (v2 design, Agnost visual language). Data: channels/pipecat-test/results.json,
+code: channels/pipecat-test/agnost_tool_spans.py. Reuses /start's CSS and trace viewer."""
+import html, io, json, keyword, tokenize
 from pathlib import Path
 
 ROOT = Path("D:/proofs/agnost-growth")
-audit = (ROOT / "site/onboarding-audit/index.html").read_text(encoding="utf-8")
-css = audit[audit.index("<style>"):audit.index("</style>") + 8]
-css = css.replace("@media (prefers-reduced-motion", "pre code{background:none;color:inherit;padding:0;font:inherit}\npre{font:400 .82rem/1.55 var(--mono);background:#18201D;color:#E6ECE7;padding:18px 20px;border-radius:12px;overflow-x:auto;margin:12px 0 0}\n.big{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:26px}\n.kpi{background:var(--win);border-radius:12px;box-shadow:0 0 0 1px var(--line);padding:18px 20px}\n.kpi .v{font:600 2.4rem/1 var(--display);letter-spacing:-.02em}\n.kpi .l{color:var(--muted);font-size:.92rem;margin-top:6px}\n.kpi.bad .v{color:var(--wine)}.kpi.good .v{color:var(--cobalt)}\ntd.zero{color:var(--wine);font-weight:600}td.ok{color:var(--cobalt);font-weight:600}\n@media (max-width:520px){.big{grid-template-columns:1fr}}\n@media (prefers-reduced-motion")
+start = (ROOT / "site/start/index.html").read_text(encoding="utf-8")
+css = start[start.index("<style>") + 7:start.index("</style>")]
 res = json.loads((ROOT / "channels/pipecat-test/results.json").read_text(encoding="utf-8"))["results"]
-obs = (ROOT / "channels/pipecat-test/agnost_tool_spans.py").read_text(encoding="utf-8")
+made = sum(r["tool_calls_made"] for r in res); rec = sum(r["recipe_only"] for r in res); fixd = sum(r["with_observer"] for r in res)
+code = (ROOT / "channels/pipecat-test/agnost_tool_spans.py").read_text(encoding="utf-8").replace("\r\n", "\n")
 
-what = {
-    "baseline": ("User asks about an order; the tool runs; the bot answers", "A following LLM request carries the call"),
-    "parallel": ("Two tool calls in one LLM reply", "Same: both are in the next request"),
-    "no_followup": ("Tool returns with <code>run_llm=False</code> (the usual <code>end_call</code> / <code>transfer_call</code> pattern)", "No LLM request follows"),
-    "hangup": ("Caller hangs up while the tool is running (Pipecat's examples call <code>runner.cancel()</code> on disconnect)", "Call ends before any follow-up"),
-    "interrupt": ("User talks over a slow tool; Pipecat cancels it", "<code>FunctionCallCancelFrame</code>, no follow-up"),
-    "timeout": ("Tool exceeds <code>timeout_secs</code>; Pipecat cancels it and asks the LLM to continue", "Visible, but only as <code>CANCELLED</code>; the span adds the reason"),
-    "error": ("Tool raises (order service returns 503)", "Visible, but only as \"failed and returned no result\"; the span keeps <code>RuntimeError: order service returned 503</code>"),
-    "baseline (Claude)": ("Baseline with Pipecat's <code>AnthropicLLMService</code>", "Next request carries <code>tool_use</code> blocks, not OpenAI <code>tool_calls</code>*"),
-    "no_followup (Claude)": ("<code>run_llm=False</code> with Claude", "No LLM request follows"),
-}
-rows = []
-made = lost = fixed = 0
-for r in res:
-    made += r["tool_calls_made"]; lost += r["tool_calls_made"] - r["recipe_only"]; fixed += r["with_observer"]
-    c1 = "zero" if r["recipe_only"] < r["tool_calls_made"] else "ok"
-    c2 = "zero" if r["with_observer"] < r["tool_calls_made"] else "ok"
-    rows.append(f'<tr><td>{what[r["scenario"]][0]}</td><td class="n">{r["tool_calls_made"]}</td><td class="n {c1}">{r["recipe_only"]}</td><td class="n {c2}">{r["with_observer"]}</td><td>{what[r["scenario"]][1]}</td></tr>')
 
-page = f'''<!doctype html>
+def highlight(src):
+    lines = src.splitlines(keepends=True)
+    def pos(rc):
+        r, c = rc; return sum(len(l) for l in lines[:r - 1]) + c
+    out, last = [], 0
+    for tok in tokenize.generate_tokens(io.StringIO(src).readline):
+        a, b = pos(tok.start), pos(tok.end)
+        if a < last: continue
+        out.append(html.escape(src[last:a])); t = html.escape(src[a:b])
+        if tok.type == tokenize.COMMENT: t = f'<i class="c">{t}</i>'
+        elif tok.type == tokenize.STRING: t = f'<i class="{"c" if tok.string.startswith('"""') else "s"}">{t}</i>'
+        elif tok.type == tokenize.NAME and keyword.iskeyword(tok.string): t = f'<i class="k">{t}</i>'
+        elif tok.type == tokenize.NUMBER: t = f'<i class="n">{t}</i>'
+        out.append(t); last = b
+    out.append(html.escape(src[last:]))
+    return "".join(out)
+
+
+extra_css = """
+.hero{padding:52px 32px 28px}
+h1{max-width:20ch}
+.why{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:56px;align-items:center}
+.lanes{border:1px solid var(--line-2);border-radius:14px;overflow:hidden}
+.lane{padding:18px 20px;border-bottom:1px solid var(--line)}
+.lane:last-child{border-bottom:0;background:#FFF8F9}
+.lane h3{margin:0 0 12px;font:500 13px var(--sans);color:var(--ink-2);display:flex;justify-content:space-between;gap:12px}
+.lane h3 em{font-style:normal;color:var(--green)}
+.lane:last-child h3 em{color:var(--red)}
+.flow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font:500 12px var(--mono)}
+.flow span{padding:8px 10px;border-radius:6px;background:#F1F1F1;color:var(--ink-2)}
+.flow .tc{background:var(--violet);color:#fff}
+.flow .nx{background:#E9E5F8;color:#5A4A93;box-shadow:0 0 0 2px var(--violet-mid)}
+.flow .gone{background:#fff;border:1.5px dashed #E0A3B0;color:var(--red)}
+.flow b{color:var(--muted);font-weight:400}
+.lane p{margin:12px 0 0;font-size:14px;color:var(--ink-2)}
+.fixgrid{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,8fr);gap:48px;align-items:start}
+.attrs{list-style:none;padding:0;margin:18px 0 0;display:grid;gap:10px}
+.attrs li{font-size:15px;color:var(--ink-2);padding-left:18px;position:relative}
+.attrs li::before{content:"";position:absolute;left:0;top:.6em;width:7px;height:7px;border-radius:2px;background:var(--violet);transform:rotate(45deg)}
+.win{border-radius:12px;overflow:hidden;background:#111114;box-shadow:0 0 0 1px rgba(0,0,0,.08),0 30px 70px -35px rgba(30,10,90,.55);min-width:0}
+.win .tabs{display:flex;align-items:center;gap:8px;padding:10px 14px;background:#1B1B20;color:#A9A9B3;font:400 12.5px var(--mono)}
+.win .tabs i{width:10px;height:10px;border-radius:50%;background:#3A3A42;display:inline-block}
+.win .tabs b{margin-left:10px;color:#ECECF1;font-weight:400}
+.win pre{margin:0;padding:18px 20px;max-height:560px;overflow:auto;font:400 12.8px/1.62 var(--mono);color:#D9D9E3;tab-size:4}
+.win pre code{background:none;color:inherit;padding:0;font:inherit}
+.win pre i{font-style:normal}
+.win pre .c{color:#85859A;font-style:italic}.win pre .s{color:#B9F2C9}.win pre .k{color:#B8A3FF}.win pre .n{color:#FFC48A}.win pre .p{color:#7BE0A9}
+.facts{list-style:none;margin:0;padding:0}
+.facts li{display:grid;grid-template-columns:110px minmax(0,1fr);gap:16px;padding:16px 0;border-top:1px solid var(--line);font-size:15px;color:var(--ink-2)}
+.facts li:last-child{border-bottom:1px solid var(--line)}
+.facts li b{font:italic 400 24px/1.1 var(--serif);color:var(--violet-ink)}
+.facts .more{margin-left:4px}
+.limits{margin:18px 0 0;padding:0;list-style:none;display:grid;gap:8px;font-size:14px;color:var(--muted)}
+@media (max-width:980px){.why,.fixgrid{grid-template-columns:1fr;gap:24px}}
+@media (max-width:640px){.facts li{grid-template-columns:1fr;gap:4px}.win pre{font-size:11.5px;padding:14px}}
+"""
+
+viewer_js = start[start.index("<script>") + 8:start.index("</script>")]
+v0 = start.index('<div class="viewer"'); v1 = start.index('<section id="openai">')
+viewer = start[v0:v1].rstrip()
+viewer = viewer[:viewer.rstrip().rfind("</div>")].rstrip()  # drop the closing tag of .hero
+
+results_lines = "\n".join(f"{r['scenario'][:21]:21} made {r['tool_calls_made']}  recipe only {r['recipe_only']}  with fix {r['with_observer']}" for r in res)
+
+page = f"""<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Pipecat tool-call test</title>
-<meta name="description" content="Tested on Pipecat 1.17.0: tool calls with no follow-up LLM request, and Claude tool calls, are not recoverable through the documented OpenTelemetry setup. An 80-line observer fixes it.">
+<meta name="description" content="Tested on Pipecat 1.17.0 with Agnost's documented setup: {made - rec} of {made} tool calls are not recoverable. An 80-line observer brings it to {fixd} of {made}.">
+<meta property="og:title" content="{made - rec} of {made} Pipecat tool calls never make it into an Agnost trace">
+<meta property="og:description" content="Tested on Pipecat 1.17.0 following Agnost's docs. An 80-line observer fixes it. One-command test.">
+<meta property="og:image" content="https://agnost-adk-guide-check.vercel.app/start/og.png">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..700&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
-{css}
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Instrument+Sans:wght@400..600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>{css}{extra_css}</style>
 </head>
 <body>
-<div class="wrap">
-  <header class="top">
-    <span><b>Pipecat tool-call test</b> for Agnost AI</span>
-    <nav aria-label="Page"><a href="#results">Results</a><a href="#fix">The fix</a><a href="#upstream">Upstream</a><a href="#reproduce">Reproduce</a><a href="/onboarding-audit">Onboarding audit</a></nav>
-  </header>
-
-  <div class="hero">
-    <h1>The tool calls a voice bot makes right before a call ends don't reach Agnost</h1>
-    <p class="lede">Your Pipecat page says Pipecat creates no span for function execution, so Agnost <em>"recovers each call and its result from the context of the LLM request that follows it."</em> I tested what happens when nothing follows. <strong>On Pipecat 1.17.0, following your setup exactly, {lost} of {made} tool calls in my test weren't recoverable: 4 appeared in no exported span at all, and 1 (with Claude) only in Anthropic's format, which your docs don't cover.</strong> An 80-line observer brings it to {fixed} of {made}, in the span shape your ingest already reads.</p>
-    <div class="big">
-      <div class="kpi bad"><div class="v">{made - lost} / {made}</div><div class="l">tool calls recoverable with the documented setup</div></div>
-      <div class="kpi good"><div class="v">{fixed} / {made}</div><div class="l">with <code>AgnostToolSpanObserver</code> added</div></div>
-    </div>
+<div class="frame">
+  <div class="bar">
+    <div><b><a href="/start" style="text-decoration:none">Nitesh Kumar Yadav</a></b> <span>Pipecat tool-call test for Agnost AI</span></div>
+    <nav aria-label="Page"><a href="#why">Why</a><a href="#fix">The fix</a><a href="#reproduce">Reproduce</a></nav>
   </div>
 
-  <section id="results">
-    <h2>Nine scenarios, one local run</h2>
-    <p class="sub">Each scenario ran twice: your recipe as written, then with the observer. Spans went to a local OTLP/HTTP receiver standing in for <code>otel.agnost.ai</code> (same protobuf, same <code>X-Agnost-Org-ID</code> header). "Visible" means the call's tool name and arguments are in some exported span, either an <code>execute_tool</code> span or an assistant <code>tool_calls</code> entry inside a later <code>llm</code> span's <code>input</code>.</p>
-    <div class="tw"><table>
-      <thead><tr><th>Scenario</th><th>Tool calls made</th><th>Visible, recipe only</th><th>Visible, with observer</th><th>Why</th></tr></thead>
-      <tbody>{"".join(rows)}</tbody>
-    </table></div>
-    <p class="note" style="margin-top:14px">* Your docs say recovery "works for OpenAI-compatible LLM services, which send context in OpenAI chat format." Pipecat writes each provider's own format into the <code>llm</code> span: OpenAI <code>tool_calls</code>, Anthropic <code>tool_use</code> blocks (tested here), AWS Bedrock <code>toolUse</code> and Gemini <code>function_call</code> parts (from Pipecat's adapter source). I counted Claude calls as not recoverable by that stated condition; if your ingest already parses Anthropic's format, those two rows change. The observer's span is the same whichever LLM the bot uses.</p>
-    <p class="note" style="margin-top:10px">The three lost cases are the ones your product exists for. An <code>end_call</code> or <code>transfer_call</code> tool is how a voice bot finishes or escalates a call, and GitHub code search finds 165 public Python files containing both <code>run_llm=False</code> and <code>end_call</code>. A caller who hangs up mid-lookup and a tool cut off by an interruption are the calls where something went wrong. In all three, the LLM span that requested the tool has no <code>output</code> attribute, so the request itself isn't in the trace either.</p>
+  <div class="hero">
+    <div class="rise">
+      <div class="from"><i></i>Pipecat 1.17.0, tested 27 Nov 2026</div>
+      <h1>{made - rec} of {made} tool calls <em>never make it</em> into an Agnost trace.</h1>
+      <p class="lede">Your Pipecat page says Agnost recovers each tool call “from the context of the LLM request that follows it.” I tested what happens when nothing follows. These are the calls that end a conversation, hand it off, or break.</p>
+      <div class="ctas">
+        <a class="btn solid" href="#fix">See the 80&#8209;line fix</a>
+        <a class="btn dash" href="#reproduce">Run it yourself</a>
+      </div>
+    </div>
+    {viewer}
+  </div>
+
+  <section id="why">
+    <div class="why">
+      <div>
+        <div class="num">Why they go missing</div>
+        <h2>Pipecat never writes a span for a tool. Agnost reads the next request. Sometimes there isn't one.</h2>
+        <p style="color:var(--ink-2);max-width:46ch">When the bot ends the call, transfers it, gets hung up on, or gets interrupted, no LLM request comes after the tool, so the call is in no span at all. With Claude, the next request exists but carries Anthropic's <code>tool_use</code> format, which your docs say recovery doesn't cover.</p>
+      </div>
+      <div class="lanes" aria-label="Two timelines compared">
+        <div class="lane">
+          <h3>Normal turn <em>recovered</em></h3>
+          <div class="flow"><span>user</span><b>→</b><span class="tc">llm asks for get_order_status</span><b>→</b><span>tool runs</span><b>→</b><span class="nx">next llm request carries it</span></div>
+          <p>The call and its result ride along in the next request's context. Agnost reads them there.</p>
+        </div>
+        <div class="lane">
+          <h3>Bot ends the call <em>lost</em></h3>
+          <div class="flow"><span>user</span><b>→</b><span class="tc">llm asks for end_call</span><b>→</b><span>tool runs</span><b>→</b><span class="gone">nothing follows</span></div>
+          <p>The tool returns with <code>run_llm=False</code>, so no next request carries the call. A hang-up or an interruption ends the same way.</p>
+        </div>
+      </div>
+    </div>
   </section>
 
   <section id="fix">
-    <h2>The fix: one observer, no backend change</h2>
-    <p class="sub">It writes each function call as an <code>execute_tool &lt;name&gt;</code> span under the current turn, with <code>gen_ai.tool.name</code>, <code>gen_ai.tool.call.id</code>, <code>gen_ai.tool.call.arguments</code> and <code>gen_ai.tool.call.result</code>. That is the shape your Vercel eve and Inngest AgentKit pages already list as "a tool call with its arguments, result, latency, and outcome". A call that is cancelled, or still open when the call ends, is closed with an error status and the reason. Each call is handled once, even though its frames pass through several processors.</p>
-    <pre><code>{html.escape(obs)}</code></pre>
-    <p class="note" style="margin-top:12px">Add it with <code>PipelineWorker(pipeline, observers=[AgnostToolSpanObserver()], enable_tracing=True, ...)</code>. Checked in the test: every tool span shares the conversation's trace and have the <code>turn</code> span as parent; the two parallel calls keep their own IDs, arguments and results. In the baseline cases Agnost now gets the call twice (the span and the next request's context), so the ingest should dedupe on <code>gen_ai.tool.call.id</code>, or the docs could say to use the observer instead of context recovery.</p>
+    <div class="fixgrid">
+      <div>
+        <div class="num">The fix</div>
+        <h2>One observer. No backend change.</h2>
+        <p style="color:var(--ink-2)">Add it to the worker with <code>observers=[AgnostToolSpanObserver()]</code>. It writes every tool call as its own span under the current turn, in the shape your other framework pages already read.</p>
+        <ul class="attrs">
+          <li>An <code>execute_tool</code> span with tool name, call id, arguments and result</li>
+          <li>Parent is the <code>turn</code> span, in the conversation's trace</li>
+          <li>Cancelled, timed-out or unfinished calls close as errors, with the reason</li>
+          <li>Same result whichever LLM the bot uses, Claude included</li>
+        </ul>
+      </div>
+      <div class="win">
+        <div class="tabs"><i></i><i></i><i></i><b>agnost_tool_spans.py</b></div>
+        <pre><code>{highlight(code)}</code></pre>
+      </div>
+    </div>
   </section>
 
-  <section id="upstream">
-    <h2>Why not wait for Pipecat?</h2>
-    <p class="sub">Pipecat has an open pull request that adds <code>function_call</code> spans: <a href="https://github.com/pipecat-ai/pipecat/pull/4266">#4266</a>, opened 9 Apr 2026 by the main developer of finchvox, an open-source observability tool for Pipecat. As of 27 Nov it has no review, now conflicts with main, and has waited 232 days. Two things matter for Agnost if it ever lands: it names attributes <code>tool.function_name</code>, <code>tool.arguments</code> and <code>tool.result</code>, not the <code>gen_ai.tool.*</code> names your ingest reads for other frameworks, so it needs a mapping; and its notes say the span for an async function call ends before the final result arrives. The observer works on the Pipecat release your customers run today.</p>
-    <p class="note">Pipecat users are hitting the same edge from the other side: <a href="https://github.com/pipecat-ai/pipecat/issues/5790">#5790</a> (open since 16 Sep) reports that a function call still running when the call ends is not settled when <code>on_pipeline_finished</code> runs, and a contributor reproduced on <code>main</code> that the tool is then cancelled during cleanup. That is the "hangup" row above; the observer records it as an error with "call ended before the tool returned".</p>
-    <p class="note">For comparison, LiveKit Agents already wraps every tool in a <code>function_tool</code> span with GenAI tool attributes (name, call id, arguments; <a href="https://github.com/livekit/agents/blob/main/livekit-agents/livekit/agents/voice/generation.py">voice/generation.py</a>), so your LiveKit customers get these calls whether or not a reply follows. Pipecat is the framework where they go missing.</p>
+  <section id="evidence">
+    <div class="split">
+      <div>
+        <div class="num">Outside evidence</div>
+        <h2>Pipecat users hit the same edge. Pipecat's own fix has waited since April.</h2>
+      </div>
+      <ul class="facts">
+        <li><b>#5790</b><div>Open since 16 Sep: a tool call still running when the call ends isn't settled when <code>on_pipeline_finished</code> runs, and a contributor reproduced on main that it's cancelled during cleanup. That's the hang-up row. <a class="more" href="https://github.com/pipecat-ai/pipecat/issues/5790">Issue →</a></div></li>
+        <li><b>#4266</b><div>A pull request adding <code>function_call</code> spans, opened 9 Apr by finchvox's main developer, unreviewed for 232 days and now conflicting. If it lands, its attributes are named <code>tool.*</code>, not the <code>gen_ai.tool.*</code> your ingest reads. <a class="more" href="https://github.com/pipecat-ai/pipecat/pull/4266">PR →</a></div></li>
+        <li><b>LiveKit</b><div>LiveKit Agents already wraps every tool in a <code>function_tool</code> span, so your LiveKit customers get these calls. Pipecat is the framework where they go missing. <a class="more" href="https://github.com/livekit/agents/blob/main/livekit-agents/livekit/agents/voice/generation.py">Source →</a></div></li>
+      </ul>
+    </div>
   </section>
 
   <section id="reproduce">
-    <h2>Reproduce it in about a minute</h2>
-    <pre><code>python -m venv .venv &amp;&amp; .venv/bin/pip install "pipecat-ai[tracing,openai,anthropic]" opentelemetry-exporter-otlp-proto-http
-.venv/bin/python run_all.py    # starts the receiver and fake OpenAI and Anthropic servers, runs 9 scenarios x 2, writes results.json</code></pre>
-    <p class="note">Files: <code>run_all.py</code>, <code>scenarios.py</code>, <code>fake_openai.py</code> (an OpenAI-compatible stub, so no API key), <code>receiver.py</code>, <code>agnost_tool_spans.py</code>, in <a href="https://github.com/techi101/agnost-adk-guide-check/tree/main/channels/pipecat-test">channels/pipecat-test</a>. Honest limits: I ran it against a local receiver, not your ingest, so I couldn't see how Agnost renders the new spans; the turn split needs real TTS frames, so this text-only test produces one turn per call; and on my Windows laptop an app-control policy blocks the compiled <code>sentencex</code> module, so the test puts a small pure-Python stand-in on <code>PYTHONPATH</code> (<code>shim/</code>; not needed on Linux or macOS).</p>
-    <p class="note">Ready to hand over: a skill patch that adds the observer to the Pipecat recipe, and a docs section for docs.agnost.ai/pipecat.</p>
+    <div class="fixgrid">
+      <div>
+        <div class="num">Reproduce</div>
+        <h2>About a minute. No API keys.</h2>
+        <p style="color:var(--ink-2)">The script starts a stand-in for otel.agnost.ai and fake OpenAI and Anthropic servers, then runs all nine scenarios with and without the observer.</p>
+        <ul class="limits">
+          <li>Tested against a local receiver, not your ingest, so I couldn't see how Agnost renders the new spans.</li>
+          <li>Where a request does follow, the call now arrives twice; dedupe on <code>gen_ai.tool.call.id</code>.</li>
+          <li>Windows only: an app-control policy blocked sentencex's compiled module, so <code>shim/</code> stands in for it.</li>
+        </ul>
+        <p style="margin-top:18px"><a class="more" href="https://github.com/techi101/agnost-adk-guide-check/tree/main/channels/pipecat-test">All files on GitHub →</a></p>
+      </div>
+      <div class="win">
+        <div class="tabs"><i></i><i></i><i></i><b>terminal</b></div>
+<pre><code><i class="p">$</i> pip install "pipecat-ai[tracing,openai,anthropic]" opentelemetry-exporter-otlp-proto-http
+<i class="p">$</i> python run_all.py
+{html.escape(results_lines)}
+</code></pre>
+      </div>
+    </div>
   </section>
+
+  <footer>
+    <span><a href="/start">← Back to the overview</a></span>
+    <span>Independent work by Nitesh Kumar Yadav, not affiliated with Agnost AI.</span>
+  </footer>
 </div>
-<footer>
-  <div class="wrap">
-    <span>Nitesh Kumar Yadav · NSUT Delhi · 27 Nov 2026</span>
-    <span>Independent work, not affiliated with Agnost AI. Nothing was sent to Agnost's API in this test.</span>
-  </div>
-</footer>
+<script>{viewer_js}</script>
 </body>
 </html>
-'''
-out = ROOT / "site/pipecat-tool-calls"
-out.mkdir(exist_ok=True)
-(out / "index.html").write_text(page, encoding="utf-8")
-print("written", len(page), "lost", lost, "made", made, "fixed", fixed)
+"""
+(ROOT / "site/pipecat-tool-calls/index.html").write_text(page, encoding="utf-8")
+print("written", len(page), "lost", made - rec, "made", made, "fixed", fixd)
