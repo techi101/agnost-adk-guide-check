@@ -92,7 +92,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
       <h3>The recommended skill has no recipe for Vapi, Pipecat, Google ADK or LlamaIndex</h3>
       <p>The Pipecat, ADK and LlamaIndex docs pages each say "Recommended: Agnost AI skill", and the homepage tells every developer to install it. But <code>references/frameworks.md</code> has no section for any of the four, and <code>detect.mjs</code> doesn't recognise them. A Vapi or Pipecat team that follows the recommended path gets no platform recipe.</p>
       <p class="ev">Evidence: <a href="https://github.com/AgnostAI/skills/blob/main/skills/agnost-ai/references/frameworks.md">frameworks.md</a> (2,289 lines; "pipecat" appears twice, only in passing; "vapi", "adk", "llamaindex" zero times) vs <a href="https://docs.agnost.ai/pipecat">docs.agnost.ai/pipecat</a>, <a href="https://docs.agnost.ai/vapi">/vapi</a>, <a href="https://docs.agnost.ai/google-adk">/google-adk</a>, <a href="https://docs.agnost.ai/llamaindex">/llamaindex</a>.</p>
-      <p class="ev">Fix: four new recipe sections written from those docs pages, added before the last section so every existing anchor (including the ones the tests pin) stays put, with contents links and routes in <code>SKILL.md</code>.</p>
+      <p class="ev">Fix: four new recipe sections written from those docs pages, added before the last section so every existing anchor (including the ones the tests pin) stays put, with contents links and routes in <code>SKILL.md</code>. A second patch teaches <code>detect.mjs</code> to route <code>pipecat-ai</code>, <code>google-adk</code> and <code>llama-index</code> projects to those recipes (today a Pipecat app with an OpenAI dependency is routed to the OpenAI recipe), adds matching <code>instrument.mjs</code> branches, and adds three routing tests.</p>
     </div></div>
 
     <div class="finding"><div class="num">02</div><div>
@@ -161,7 +161,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
     <div class="tw"><table>
       <thead><tr><th>Fix</th><th>Form</th><th>Status</th></tr></thead>
       <tbody>
-        <tr><td>Skill: four recipes, license, description, paths, helper docs (findings 1 to 3)</td><td>One git patch against AgnostAI/skills, 4 files, 141 lines</td><td>Checked against every string rule in <code>test/skill-contract.mjs</code> by reading; not run</td></tr>
+        <tr><td>Skill: four recipes, detection and instrumentation for Pipecat, ADK and LlamaIndex, license, description, paths, helper docs (findings 1 to 3)</td><td>Two git patches against AgnostAI/skills, 7 files, 195 lines, 3 new routing tests</td><td>Syntax checked with <code>node --check</code>; routing replicated on 8 fixtures (all expected); string rules in <code>test/skill-contract.mjs</code> checked by reading; the test suite itself was not run</td></tr>
         <tr><td>llms.txt (finding 5)</td><td>11 lines grouped by section</td><td>Ready to paste</td></tr>
         <tr><td>Mastra docs page (finding 6)</td><td>Markdown draft</td><td>Needs one run against a real org</td></tr>
         <tr><td>Pipecat listing (finding 7)</td><td>MDX page + docs.json line</td><td>API names checked against Pipecat v1.17.0</td></tr>
