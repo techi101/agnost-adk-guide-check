@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pipecat tool-call test</title>
+<meta name="description" content="Tested on Pipecat 1.17.0: tool calls with no follow-up LLM request never reach Agnost through the documented OpenTelemetry setup. An 80-line observer fixes it.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..700&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#EDF0EA; --paper-2:#E3E8E1; --ink:#18201D; --muted:#56635E; --line:#CCD4CE;
+  --cobalt:#2747C9; --cobalt-bg:#E3E8FA; --wine:#A3204F; --wine-bg:#F6E3EA; --amber:#8A5A00; --amber-bg:#F6ECD6;
+  --win:#FBFCFA; --win-bar:#F1F4F0;
+  --display:"Bricolage Grotesque",Georgia,serif; --text:"Geist",ui-sans-serif,sans-serif; --mono:"Geist Mono",ui-monospace,monospace;
+  --step-0:clamp(1rem,.96rem + .2vw,1.0625rem); --step-1:clamp(1.15rem,1.05rem + .5vw,1.35rem); --step-3:clamp(1.9rem,1.4rem + 2.4vw,3.1rem);
+  --ease-out:cubic-bezier(.23,1,.32,1);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;overflow-x:hidden;background:var(--paper);color:var(--ink);font:400 var(--step-0)/1.6 var(--text)}
+a{color:var(--cobalt);text-underline-offset:3px;overflow-wrap:anywhere}
+a:focus-visible{outline:2px solid var(--cobalt);outline-offset:3px;border-radius:4px}
+.wrap{max-width:1040px;margin:0 auto;padding:0 24px}
+header.top{display:flex;justify-content:space-between;align-items:center;padding:22px 0;font-size:.95rem;color:var(--muted);gap:12px;flex-wrap:wrap}
+header.top b{color:var(--ink);font-weight:600}
+header.top nav{display:flex;gap:18px;flex-wrap:wrap}
+header.top nav a{color:var(--muted);text-decoration:none}
+.hero{padding:44px 0 28px}
+h1{font:600 var(--step-3)/1.06 var(--display);letter-spacing:-.025em;margin:0 0 18px;max-width:22ch;text-wrap:balance}
+.lede{font-size:var(--step-1);line-height:1.5;color:var(--muted);max-width:64ch;margin:0}
+.lede strong{color:var(--ink);font-weight:500}
+.path{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;margin:30px 0 0;border-radius:14px;overflow:hidden;box-shadow:0 0 0 1px var(--line)}
+.step{background:var(--win);padding:16px 16px 18px;min-width:0;border-right:1px solid var(--line)}
+.step:last-child{border-right:0}
+.step .k{font:500 .74rem var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.step b{display:block;font:600 1.02rem/1.3 var(--text);margin:4px 0 6px}
+.step .n{display:inline-block;font:600 .8rem var(--mono);padding:3px 8px;border-radius:999px;background:var(--wine-bg);color:var(--wine)}
+section{padding:60px 0 0}
+h2{font:600 clamp(1.45rem,1.2rem + 1vw,2rem)/1.15 var(--display);letter-spacing:-.02em;margin:0 0 8px}
+.sub{color:var(--muted);margin:0 0 18px;max-width:70ch}
+.finding{background:var(--win);border-radius:12px;box-shadow:0 0 0 1px var(--line);padding:20px 22px;margin-top:14px;display:grid;grid-template-columns:44px minmax(0,1fr);gap:14px}
+.finding .num{font:600 1.4rem/1 var(--display);color:var(--muted)}
+.finding h3{font:600 1.08rem/1.35 var(--text);margin:0 0 6px}
+.finding p{margin:0 0 8px;max-width:76ch}
+.finding .ev{font-size:.9rem;color:var(--muted)}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.tag{font:500 .72rem/1 var(--mono);padding:5px 8px;border-radius:6px}
+.tag.fix{background:var(--cobalt-bg);color:var(--cobalt)}
+.tag.imp{background:var(--wine-bg);color:var(--wine)}
+.tag.dec{background:var(--amber-bg);color:var(--amber)}
+code{font:400 .86em var(--mono);background:var(--paper-2);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
+.tw{overflow-x:auto;border-radius:12px;box-shadow:0 0 0 1px var(--line);background:var(--win);margin-top:12px}
+table{border-collapse:collapse;width:100%;min-width:620px;font-size:.9rem}
+th,td{padding:10px 12px;border-bottom:1px solid #E3E8E3;text-align:left;vertical-align:top}
+th{font-weight:500;color:var(--muted);background:var(--win-bar)}
+tr:last-child td{border-bottom:0}
+td.n{font-family:var(--mono);font-size:.84rem;white-space:nowrap}
+.note{font-size:.9rem;color:var(--muted);max-width:74ch}
+footer{margin:80px 0 0;padding:26px 0 40px;border-top:1px solid var(--line);color:var(--muted);font-size:.92rem}
+footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+@media (max-width:820px){.path{grid-template-columns:1fr 1fr}.step:nth-child(2){border-right:0}.step:nth-child(-n+2){border-bottom:1px solid var(--line)}}
+@media (max-width:520px){.wrap{padding:0 16px}.path{grid-template-columns:1fr}.step{border-right:0;border-bottom:1px solid var(--line)}.finding{grid-template-columns:1fr;gap:4px}}
+pre{font:400 .82rem/1.55 var(--mono);background:#18201D;color:#E6ECE7;padding:18px 20px;border-radius:12px;overflow-x:auto;margin:12px 0 0}
+.big{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:26px}
+.kpi{background:var(--win);border-radius:12px;box-shadow:0 0 0 1px var(--line);padding:18px 20px}
+.kpi .v{font:600 2.4rem/1 var(--display);letter-spacing:-.02em}
+.kpi .l{color:var(--muted);font-size:.92rem;margin-top:6px}
+.kpi.bad .v{color:var(--wine)}.kpi.good .v{color:var(--cobalt)}
+td.zero{color:var(--wine);font-weight:600}td.ok{color:var(--cobalt);font-weight:600}
+@media (max-width:520px){.big{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span><b>Pipecat tool-call test</b> for Agnost AI</span>
+    <nav aria-label="Page"><a href="#results">Results</a><a href="#fix">The fix</a><a href="#reproduce">Reproduce</a><a href="/onboarding-audit">Onboarding audit</a></nav>
+  </header>
+
+  <div class="hero">
+    <h1>The tool calls a voice bot makes right before a call ends don't reach Agnost</h1>
+    <p class="lede">Your Pipecat page says Pipecat creates no span for function execution, so Agnost <em>"recovers each call and its result from the context of the LLM request that follows it."</em> I tested what happens when nothing follows. <strong>On Pipecat 1.17.0, following your setup exactly, 3 of 6 tool calls never appeared in any exported span.</strong> An 80-line observer brings it to 6 of 6, in the span shape your ingest already reads.</p>
+    <div class="big">
+      <div class="kpi bad"><div class="v">3 / 6</div><div class="l">tool calls visible with the documented setup</div></div>
+      <div class="kpi good"><div class="v">6 / 6</div><div class="l">with <code>AgnostToolSpanObserver</code> added</div></div>
+    </div>
+  </div>
+
+  <section id="results">
+    <h2>Five scenarios, one local run</h2>
+    <p class="sub">Each scenario ran twice: your recipe as written, then with the observer. Spans went to a local OTLP/HTTP receiver standing in for <code>otel.agnost.ai</code> (same protobuf, same <code>X-Agnost-Org-ID</code> header). "Visible" means the call's tool name and arguments are in some exported span, either an <code>execute_tool</code> span or an assistant <code>tool_calls</code> entry inside a later <code>llm</code> span's <code>input</code>.</p>
+    <div class="tw"><table>
+      <thead><tr><th>Scenario</th><th>Tool calls made</th><th>Visible, recipe only</th><th>Visible, with observer</th><th>Why</th></tr></thead>
+      <tbody><tr><td>User asks about an order; the tool runs; the bot answers</td><td class="n">1</td><td class="n ok">1</td><td class="n ok">1</td><td>A following LLM request carries the call</td></tr><tr><td>Two tool calls in one LLM reply</td><td class="n">2</td><td class="n ok">2</td><td class="n ok">2</td><td>Same: both are in the next request</td></tr><tr><td>Tool returns with <code>run_llm=False</code> (the usual <code>end_call</code> / <code>transfer_call</code> pattern)</td><td class="n">1</td><td class="n zero">0</td><td class="n ok">1</td><td>No LLM request follows</td></tr><tr><td>Caller hangs up while the tool is running (Pipecat's examples call <code>runner.cancel()</code> on disconnect)</td><td class="n">1</td><td class="n zero">0</td><td class="n ok">1</td><td>Call ends before any follow-up</td></tr><tr><td>User talks over a slow tool; Pipecat cancels it</td><td class="n">1</td><td class="n zero">0</td><td class="n ok">1</td><td><code>FunctionCallCancelFrame</code>, no follow-up</td></tr></tbody>
+    </table></div>
+    <p class="note" style="margin-top:14px">The three lost cases are the ones your product exists for. An <code>end_call</code> or <code>transfer_call</code> tool is how a voice bot finishes or escalates a call, and GitHub code search finds 165 public Python files containing both <code>run_llm=False</code> and <code>end_call</code>. A caller who hangs up mid-lookup and a tool cut off by an interruption are the calls where something went wrong. In all three, the LLM span that requested the tool has no <code>output</code> attribute, so the request itself isn't in the trace either.</p>
+  </section>
+
+  <section id="fix">
+    <h2>The fix: one observer, no backend change</h2>
+    <p class="sub">It writes each function call as an <code>execute_tool &lt;name&gt;</code> span under the current turn, with <code>gen_ai.tool.name</code>, <code>gen_ai.tool.call.id</code>, <code>gen_ai.tool.call.arguments</code> and <code>gen_ai.tool.call.result</code>. That is the shape your Vercel eve and Inngest AgentKit pages already list as "a tool call with its arguments, result, latency, and outcome". A call that is cancelled, or still open when the call ends, is closed with an error status and the reason. Each call is handled once, even though its frames pass through several processors.</p>
+    <pre><code>&quot;&quot;&quot;AgnostToolSpanObserver: one OpenTelemetry span per Pipecat function call.
+
+Why: Pipecat creates no span for function execution, so Agnost recovers a tool call from the context of the LLM
+request that follows it. When nothing follows (a tool that returns with run_llm=False, such as end_call or
+transfer_call; a caller who hangs up while the tool runs; a call cancelled by an interruption) the call never
+reaches Agnost. This observer writes each call as an `execute_tool` span (OpenTelemetry GenAI conventions) under
+the current turn, and closes any span still open when the call ends, marked as an error.
+
+Use: PipelineWorker(pipeline, observers=[AgnostToolSpanObserver()], enable_tracing=True, ...)
+&quot;&quot;&quot;
+import json
+
+from opentelemetry import trace
+from opentelemetry.trace import Status, StatusCode
+
+from pipecat.frames.frames import (CancelFrame, EndFrame, FunctionCallCancelFrame, FunctionCallInProgressFrame,
+                                   FunctionCallResultFrame)
+from pipecat.observers.base_observer import BaseObserver, FramePushed
+
+MAX_LEN = 4000  # keep span attributes small
+
+
+def _json(value):
+    try:
+        text = value if isinstance(value, str) else json.dumps(value, default=str)
+    except Exception:
+        text = str(value)
+    return text[:MAX_LEN]
+
+
+class AgnostToolSpanObserver(BaseObserver):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self._tracer = trace.get_tracer(&quot;agnost.pipecat.tools&quot;)
+        self._open = {}  # tool_call_id -&gt; span
+        self._done = set()  # frames pass through several processors; handle each call once
+
+    async def on_push_frame(self, data: FramePushed):
+        frame = data.frame
+        if isinstance(frame, FunctionCallInProgressFrame):
+            if frame.tool_call_id in self._open or frame.tool_call_id in self._done:
+                return
+            tracing = getattr(data.source, &quot;_tracing_context&quot;, None)
+            parent = tracing.get_turn_context() if tracing else None
+            span = self._tracer.start_span(f&quot;execute_tool {frame.function_name}&quot;, context=parent,
+                                           kind=trace.SpanKind.INTERNAL)
+            span.set_attribute(&quot;gen_ai.operation.name&quot;, &quot;execute_tool&quot;)
+            span.set_attribute(&quot;gen_ai.tool.name&quot;, frame.function_name)
+            span.set_attribute(&quot;gen_ai.tool.call.id&quot;, frame.tool_call_id)
+            span.set_attribute(&quot;gen_ai.tool.call.arguments&quot;, _json(frame.arguments))
+            if tracing and tracing.conversation_id:
+                span.set_attribute(&quot;conversation.id&quot;, tracing.conversation_id)
+            self._open[frame.tool_call_id] = span
+        elif isinstance(frame, FunctionCallResultFrame):
+            span = self._open.pop(frame.tool_call_id, None)
+            if not span:
+                return
+            span.set_attribute(&quot;gen_ai.tool.call.result&quot;, _json(frame.result))
+            error = getattr(frame, &quot;error&quot;, None)
+            if error:
+                span.set_status(Status(StatusCode.ERROR, str(error)[:200]))
+            if frame.run_llm is False:
+                span.set_attribute(&quot;agnost.tool.run_llm&quot;, False)
+            span.end()
+            self._done.add(frame.tool_call_id)
+        elif isinstance(frame, FunctionCallCancelFrame):
+            self._close(frame.tool_call_id, &quot;cancelled (interruption or timeout)&quot;)
+        elif isinstance(frame, (EndFrame, CancelFrame)):
+            for call_id in list(self._open):
+                self._close(call_id, &quot;call ended before the tool returned&quot;)
+
+    def _close(self, call_id, reason):
+        span = self._open.pop(call_id, None)
+        if span:
+            span.set_status(Status(StatusCode.ERROR, reason))
+            span.set_attribute(&quot;agnost.tool.outcome&quot;, reason)
+            span.end()
+            self._done.add(call_id)
+</code></pre>
+    <p class="note" style="margin-top:12px">Add it with <code>PipelineWorker(pipeline, observers=[AgnostToolSpanObserver()], enable_tracing=True, ...)</code>. Checked in the test: every tool span shares the conversation's trace and have the <code>turn</code> span as parent; the two parallel calls keep their own IDs, arguments and results. In the baseline cases Agnost now gets the call twice (the span and the next request's context), so the ingest should dedupe on <code>gen_ai.tool.call.id</code>, or the docs could say to use the observer instead of context recovery.</p>
+  </section>
+
+  <section id="reproduce">
+    <h2>Reproduce it in about a minute</h2>
+    <pre><code>python -m venv .venv &amp;&amp; .venv/bin/pip install "pipecat-ai[tracing,openai]" opentelemetry-exporter-otlp-proto-http
+.venv/bin/python run_all.py    # starts the receiver and a fake OpenAI server, runs 5 scenarios x 2, writes results.json</code></pre>
+    <p class="note">Files: <code>run_all.py</code>, <code>scenarios.py</code>, <code>fake_openai.py</code> (an OpenAI-compatible stub, so no API key), <code>receiver.py</code>, <code>agnost_tool_spans.py</code>, in <a href="https://github.com/techi101/agnost-adk-guide-check/tree/main/channels/pipecat-test">channels/pipecat-test</a>. Honest limits: I ran it against a local receiver, not your ingest, so I couldn't see how Agnost renders the new spans; the turn split needs real TTS frames, so this text-only test produces one turn per call; and on my Windows laptop an app-control policy blocks the compiled <code>sentencex</code> module, so the test puts a small pure-Python stand-in on <code>PYTHONPATH</code> (<code>shim/</code>; not needed on Linux or macOS).</p>
+    <p class="note">Ready to hand over: a skill patch that adds the observer to the Pipecat recipe, and a docs section for docs.agnost.ai/pipecat.</p>
+  </section>
+</div>
+<footer>
+  <div class="wrap">
+    <span>Nitesh Kumar Yadav · NSUT Delhi · 27 Nov 2026</span>
+    <span>Independent work, not affiliated with Agnost AI. Nothing was sent to Agnost's API in this test.</span>
+  </div>
+</footer>
+</body>
+</html>

@@ -7,3 +7,4 @@ __pycache__/
 channels/mastra/test/node_modules/
 channels/mastra/test/received.json
 channels/mastra/test/package-lock.json
+channels/pipecat-test/received.json
