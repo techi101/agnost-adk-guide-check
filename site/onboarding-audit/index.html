@@ -106,7 +106,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
       <div class="tags"><span class="tag imp">trust</span><span class="tag fix">patch ready</span></div>
       <h3>Six open issues on the skill repo, 77 days without a reply</h3>
       <p>All six were filed on 11 Sep 2026 and none has a comment: missing license (#6), non-portable paths (#2), a description that under-triggers (#1), hidden scripts that contradict the contract (#3), oversized references (#4), scripts that are hard to invoke (#5). Anyone checking the repo before installing sees that.</p>
-      <p class="ev">The patch closes five: MIT license file and <code>license</code> field (your other public repos are MIT; your call), a description that says what and when with the platform names agents search for, the path fix, documentation of <code>provision.mjs</code> and <code>run.mjs</code> as sandbox-only, and a <code>compatibility</code> field for Node 18 (the scripts' shared library says it needs Node 18 built-ins). #4 is left as a proposal: the tests pin anchors inside <code>frameworks.md</code>, so splitting it needs test changes.</p>
+      <p class="ev">The patch closes five: MIT license file and <code>license</code> field (your other public repos are MIT; your call), a description that says what and when with the platform names agents search for, the path fix, documentation of <code>provision.mjs</code> and <code>run.mjs</code> as sandbox-only, a <code>compatibility</code> field for Node 18 (the scripts' shared library says it needs Node 18 built-ins), and <code>--help</code> on all five scripts (tested in isolation: prints usage and exits before any work). #4 is left as a proposal: the tests pin anchors inside <code>frameworks.md</code>, so splitting it needs test changes.</p>
     </div></div>
 
     <div class="finding"><div class="num">04</div><div>
@@ -161,7 +161,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
     <div class="tw"><table>
       <thead><tr><th>Fix</th><th>Form</th><th>Status</th></tr></thead>
       <tbody>
-        <tr><td>Skill: four recipes, detection and instrumentation for Pipecat, ADK and LlamaIndex, license, description, paths, helper docs (findings 1 to 3)</td><td>Two git patches against AgnostAI/skills, 7 files, 195 lines, 3 new routing tests</td><td>Syntax checked with <code>node --check</code>; routing replicated on 8 fixtures (all expected); string rules in <code>test/skill-contract.mjs</code> checked by reading; the test suite itself was not run</td></tr>
+        <tr><td>Skill: four recipes, detection and instrumentation for Pipecat, ADK and LlamaIndex, license, description, paths, helper docs (findings 1 to 3)</td><td>Three git patches against AgnostAI/skills, 10 files, 261 lines, 3 new routing tests</td><td>Syntax checked with <code>node --check</code>; routing replicated on 8 fixtures (all expected); string rules in <code>test/skill-contract.mjs</code> checked by reading; the test suite itself was not run</td></tr>
         <tr><td>llms.txt (finding 5)</td><td>11 lines grouped by section</td><td>Ready to paste</td></tr>
         <tr><td>Mastra docs page (finding 6)</td><td>Markdown draft</td><td>Needs one run against a real org</td></tr>
         <tr><td>Pipecat listing (finding 7)</td><td>MDX page + docs.json line</td><td>API names checked against Pipecat v1.17.0</td></tr>
