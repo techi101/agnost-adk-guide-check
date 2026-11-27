@@ -110,10 +110,10 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
     </div></div>
 
     <div class="finding"><div class="num">04</div><div>
-      <div class="tags"><span class="tag dec">needs a decision</span></div>
-      <h3>The skill and the docs give different webhook URLs for 8 voice platforms</h3>
-      <p>For Retell, Bolna, Bland, ElevenLabs, Smallest AI, Synthflow, Cartesia and AgentPhone, the skill's recipes use <code>?project_id=</code> while docs.agnost.ai uses <code>?org_id=</code>. <code>SKILL.md</code> itself asks for the "org id". The skill's tests pin <code>project_id</code>, so it looks deliberate there; the Cartesia docs also add an <code>X-Webhook-Secret</code> header the skill doesn't mention.</p>
-      <p class="ev">If the API accepts both, one line in each place ("<code>org_id</code> and <code>project_id</code> are the same value") removes the doubt. If only one works, half the onboarding paths break silently. I didn't test against your API.</p>
+      <div class="tags"><span class="tag imp">activation</span><span class="tag fix">patch ready</span></div>
+      <h3>The skill's webhook URLs for 8 voice platforms use a parameter your API spec doesn't define</h3>
+      <p>For Retell, Bolna, Bland, ElevenLabs, Smallest AI, Synthflow, Cartesia and AgentPhone, the skill's recipes use <code>?project_id=</code>. Your <a href="https://docs.agnost.ai/openapi.json">OpenAPI spec</a> defines <code>org_id</code> as a <b>required</b> query parameter on all eight, and <code>project_id</code> appears nowhere in it. The Retell guide says a missing <code>org_id</code> returns <code>422</code>. If the API matches the spec, every voice team that follows the skill's recipe gets rejected calls and an empty dashboard.</p>
+      <p class="ev">I didn't call your API, so it's possible the server still accepts <code>project_id</code>. Fix: patch 5 switches the eight URLs to <code>org_id</code> and updates the four <code>skill-contract.mjs</code> assertions that pinned the old name. The skill's OTLP setup also sends <code>X-Agnost-Project-ID</code> where every docs page uses <code>X-Agnost-Org-ID</code>; worth one line in the docs saying both work, if they do.</p>
     </div></div>
 
     <div class="finding"><div class="num">05</div><div>
@@ -162,7 +162,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
     <div class="tw"><table>
       <thead><tr><th>Fix</th><th>Form</th><th>Status</th></tr></thead>
       <tbody>
-        <tr><td>Skill: four recipes, detection and instrumentation for Pipecat, ADK and LlamaIndex, license, description, paths, helper docs (findings 1 to 3)</td><td>Four git patches against AgnostAI/skills, 10 files, 265 lines, 3 new routing tests</td><td>Syntax checked with <code>node --check</code>; routing replicated on 8 fixtures (all expected); string rules in <code>test/skill-contract.mjs</code> checked by reading; the test suite itself was not run</td></tr>
+        <tr><td>Skill: four recipes, detection and instrumentation for Pipecat, ADK and LlamaIndex, license, description, paths, helper docs (findings 1 to 3)</td><td>Five git patches against AgnostAI/skills (0001 to 0005), 3 new routing tests, 4 updated assertions</td><td>Syntax checked with <code>node --check</code>; routing replicated on 8 fixtures (all expected); string rules in <code>test/skill-contract.mjs</code> checked by reading; the test suite itself was not run</td></tr>
         <tr><td>ADK guide plugin for ADK 1.x and 2.x (finding 8)</td><td>Drop-in docs section</td><td>Tested offline on ADK 2.15.1 and 1.39.1 with a local OTLP receiver</td></tr>
         <tr><td>llms.txt (finding 5)</td><td>11 lines grouped by section</td><td>Ready to paste</td></tr>
         <tr><td>Mastra docs page (finding 6)</td><td>Markdown draft</td><td>Needs one run against a real org</td></tr>
