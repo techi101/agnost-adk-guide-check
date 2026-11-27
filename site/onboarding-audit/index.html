@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Agnost onboarding audit</title>
-<meta name="description" content="Eleven fixable gaps in Agnost AI's onboarding path, from the homepage prompt to the first event, each with evidence and a prepared fix.">
+<meta name="description" content="Twelve fixable gaps in Agnost AI's onboarding path, from the homepage prompt to the first event, each with evidence and a prepared fix.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..700&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -73,14 +73,15 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
   </header>
 
   <div class="hero">
-    <h1>Eleven gaps between "paste this prompt" and a customer's first event</h1>
+    <h1>Twelve gaps between "paste this prompt" and a customer's first event</h1>
     <p class="lede">I walked Agnost's onboarding path the way a new developer would on 27 Nov 2026: the homepage prompt, the <code>agnost-ai</code> skill it installs, the docs it links to, and the indexes AI assistants read. <strong>Every gap below has a fix already prepared.</strong> Nothing was posted or submitted anywhere; the only requests sent to Agnost's API were 24 empty test calls with an all-zero ID (finding 4).</p>
     <div class="path" role="list" aria-label="The onboarding path and findings per step">
       <div class="step" role="listitem"><span class="k">Step 1</span><b>Homepage prompt</b><span class="n">entry point · sales: 9, 10</span></div>
       <div class="step" role="listitem"><span class="k">Step 2</span><b>agnost-ai skill</b><span class="n">findings 1 to 4</span></div>
-      <div class="step" role="listitem"><span class="k">Step 3</span><b>docs.agnost.ai</b><span class="n">findings 4 to 6</span></div>
+      <div class="step" role="listitem"><span class="k">Step 3</span><b>docs.agnost.ai</b><span class="n">findings 4 to 6, 12</span></div>
       <div class="step" role="listitem"><span class="k">Step 4</span><b>Platform listings</b><span class="n">findings 7, 8, 11</span></div>
     </div>
+    <p class="note" style="margin-top:18px;padding:14px 16px;background:var(--wine-bg);border-radius:10px;color:var(--ink)"><b>Tested, not just read (finding 12):</b> on Pipecat 1.17.0, following your docs exactly, tool calls with no follow-up LLM request (<code>end_call</code>-style tools, hangups mid-tool, interruptions) never reach Agnost: 3 of 6 lost across 5 scenarios. An 80-line observer fixes it, 6 of 6. <a href="/pipecat-tool-calls">Results, fix and a one-command test</a>.</p>
   </div>
 
   <section id="findings">
@@ -162,6 +163,12 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
       <p>mcp.agnost.ai/mcp is live with OAuth 2.1 and dynamic client registration, which makes it an easy listing: no keys, just the URL. The <a href="https://registry.modelcontextprotocol.io/v0/servers?search=agnost">registry search</a> returns only unrelated "agnostic" servers. Braintrust's official server (<code>io.github.braintrustdata/braintrust</code>) is listed; Langfuse appears through community-built servers.</p>
       <p class="ev">Fix: a <code>server.json</code> for <code>ai.agnost/mcp</code> that validates against the registry's official schema with 0 errors, plus the publish steps from the registry's docs (an Ed25519 key, one DNS TXT record on agnost.ai, two commands). About 15 minutes for whoever holds the DNS.</p>
       <p class="ev">Same gap on <a href="https://github.com/punkpeye/awesome-remote-mcp-servers">awesome-remote-mcp-servers</a> (4,227 stars, updated 26 Nov): its Monitoring section lists Sentry but no AI-agent observability vendor at all. Your endpoint answers the MCP handshake with the same 401 plus OAuth metadata as Sentry's listed one. The entry is drafted in the list's three-line format; it needs a Glama connector listing first for the required badge.</p>
+
+    <div class="finding"><div class="num">12</div><div>
+      <div class="tags"><span class="tag imp">data loss</span><span class="tag fix">tested fix</span></div>
+      <h3>Pipecat tool calls with no follow-up LLM request never reach Agnost</h3>
+      <p>Your Pipecat page says Agnost recovers each function call from the LLM request that follows it. I ran your setup on Pipecat 1.17.0 against a local OTLP receiver in five scenarios. When a request follows, it works. When none does (a tool returning with <code>run_llm=False</code>, the usual <code>end_call</code> and <code>transfer_call</code> pattern; a caller hanging up mid-tool; a tool cancelled by an interruption), the call is in no exported span: 3 of 6 tool calls lost. Those are the calls where something went wrong.</p>
+      <p class="ev">Fix: <code>AgnostToolSpanObserver</code>, about 80 lines, writes an <code>execute_tool</code> span per call in the shape your other framework pages already document. With it, 6 of 6. Ready as skill patch 8 and a docs section. <a href="/pipecat-tool-calls">Full results and the code</a>.</p>
     </div></div>
   </section>
 
@@ -185,7 +192,8 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
     <div class="tw"><table>
       <thead><tr><th>Fix</th><th>Form</th><th>Status</th></tr></thead>
       <tbody>
-        <tr><td>Skill: four recipes, detection and instrumentation for Pipecat, ADK and LlamaIndex, license, description, paths, helper docs (findings 1 to 3)</td><td>Seven git patches against AgnostAI/skills (0001 to 0007, including the community Anthropic route rebased), 11 files, 3 new routing tests, 4 updated assertions</td><td>Syntax checked with <code>node --check</code>; routing replicated on 8 fixtures (all expected); string rules in <code>test/skill-contract.mjs</code> checked by reading; the test suite itself was not run</td></tr>
+        <tr><td>Skill: four recipes, detection and instrumentation for Pipecat, ADK and LlamaIndex, license, description, paths, helper docs (findings 1 to 3)</td><td>Eight git patches against AgnostAI/skills (0001 to 0008, including the community Anthropic route rebased), 11 files, 3 new routing tests, 4 updated assertions</td><td>Syntax checked with <code>node --check</code>; routing replicated on 8 fixtures (all expected); string rules in <code>test/skill-contract.mjs</code> checked by reading; the test suite itself was not run</td></tr>
+        <tr><td>Pipecat tool-call observer (finding 12)</td><td>Skill patch 8 + docs section + one-command test</td><td>Tested on Pipecat 1.17.0: 3 of 6 tool calls visible before, 6 of 6 after</td></tr>
         <tr><td>ADK guide plugin for ADK 1.x and 2.x (finding 8)</td><td>Drop-in docs section</td><td>Tested offline on ADK 2.15.1 and 1.39.1 with a local OTLP receiver</td></tr>
         <tr><td>llms.txt (finding 5)</td><td>11 lines grouped by section</td><td>Ready to paste</td></tr>
         <tr><td>Mastra docs page (finding 6)</td><td>Markdown draft</td><td>Needs one run against a real org</td></tr>
