@@ -4,143 +4,272 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Nitesh for Agnost</title>
-<meta name="description" content="Tested Agnost's Pipecat setup (5 of 10 tool calls unrecoverable, fixed to 10 of 10), built OpenAI Agents SDK listing evidence, and audited onboarding: 12 gaps with fixes.">
-<meta property="og:title" content="I set up Agnost the way your customers do, and tested it">
-<meta property="og:description" content="Pipecat: 5 of 10 tool calls unrecoverable, fixed to 10 of 10. OpenAI Agents SDK listing evidence: 9 checks pass. 12 onboarding gaps with fixes.">
+<meta name="description" content="I ran Agnost's Pipecat setup on a voice bot: 5 of 10 tool calls were not recoverable. An 80-line fix brings it to 10 of 10. Plus OpenAI Agents SDK listing evidence and a 12-gap onboarding audit.">
+<meta property="og:title" content="I ran Agnost on a voice bot. Half the tool calls went missing.">
+<meta property="og:description" content="5 of 10 tool calls not recoverable with the documented Pipecat setup; 10 of 10 with an 80-line fix. Flip the switch to see it.">
 <meta property="og:image" content="https://agnost-adk-guide-check.vercel.app/start/og.png">
-<meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..700&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Instrument+Sans:wght@400..600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
-  --paper:#EDF0EA; --paper-2:#E3E8E1; --ink:#18201D; --muted:#56635E; --line:#CCD4CE;
-  --cobalt:#2747C9; --cobalt-bg:#E3E8FA; --wine:#A3204F; --wine-bg:#F6E3EA; --amber:#8A5A00; --amber-bg:#F6ECD6;
-  --win:#FBFCFA; --win-bar:#F1F4F0;
-  --display:"Bricolage Grotesque",Georgia,serif; --text:"Geist",ui-sans-serif,sans-serif; --mono:"Geist Mono",ui-monospace,monospace;
-  --step-0:clamp(1rem,.96rem + .2vw,1.0625rem); --step-1:clamp(1.15rem,1.05rem + .5vw,1.35rem); --step-3:clamp(1.9rem,1.4rem + 2.4vw,3.1rem);
-  --ease-out:cubic-bezier(.23,1,.32,1);
+  --ink:#0C0C0C; --ink-2:#3A3A3A; --muted:#6B6B6B; --line:#E4E4E4; --line-2:#D2D2D2;
+  --canvas:#FFFFFF; --wash:#FAFAF9;
+  --violet:#6D3DF5; --violet-ink:#4B22C9; --violet-soft:#EFEAFE; --violet-mid:#CDBDFB;
+  --red:#C2304A; --green:#1F8A5B;
+  --serif:"Instrument Serif",Georgia,serif; --sans:"Instrument Sans",system-ui,sans-serif; --mono:"DM Mono",ui-monospace,monospace;
+  --ease-out:cubic-bezier(.23,1,.32,1); --ease-expo:cubic-bezier(.16,1,.3,1);
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;overflow-x:hidden;background:var(--paper);color:var(--ink);font:400 var(--step-0)/1.6 var(--text)}
-a{color:var(--cobalt);text-underline-offset:3px;overflow-wrap:anywhere}
-a:focus-visible{outline:2px solid var(--cobalt);outline-offset:3px;border-radius:4px}
-.wrap{max-width:1040px;margin:0 auto;padding:0 24px}
-header.top{display:flex;justify-content:space-between;align-items:center;padding:22px 0;font-size:.95rem;color:var(--muted);gap:12px;flex-wrap:wrap}
-header.top b{color:var(--ink);font-weight:600}
-header.top nav{display:flex;gap:18px;flex-wrap:wrap}
-header.top nav a{color:var(--muted);text-decoration:none}
-.hero{padding:44px 0 28px}
-h1{font:600 var(--step-3)/1.06 var(--display);letter-spacing:-.025em;margin:0 0 18px;max-width:22ch;text-wrap:balance}
-.lede{font-size:var(--step-1);line-height:1.5;color:var(--muted);max-width:64ch;margin:0}
-.lede strong{color:var(--ink);font-weight:500}
-.path{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;margin:30px 0 0;border-radius:14px;overflow:hidden;box-shadow:0 0 0 1px var(--line)}
-.step{background:var(--win);padding:16px 16px 18px;min-width:0;border-right:1px solid var(--line)}
-.step:last-child{border-right:0}
-.step .k{font:500 .74rem var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
-.step b{display:block;font:600 1.02rem/1.3 var(--text);margin:4px 0 6px}
-.step .n{display:inline-block;font:600 .8rem var(--mono);padding:3px 8px;border-radius:999px;background:var(--wine-bg);color:var(--wine)}
-section{padding:60px 0 0}
-h2{font:600 clamp(1.45rem,1.2rem + 1vw,2rem)/1.15 var(--display);letter-spacing:-.02em;margin:0 0 8px}
-.sub{color:var(--muted);margin:0 0 18px;max-width:70ch}
-.finding{background:var(--win);border-radius:12px;box-shadow:0 0 0 1px var(--line);padding:20px 22px;margin-top:14px;display:grid;grid-template-columns:44px minmax(0,1fr);gap:14px}
-.finding .num{font:600 1.4rem/1 var(--display);color:var(--muted)}
-.finding h3{font:600 1.08rem/1.35 var(--text);margin:0 0 6px}
-.finding p{margin:0 0 8px;max-width:76ch}
-.finding .ev{font-size:.9rem;color:var(--muted)}
-.tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
-.tag{font:500 .72rem/1 var(--mono);padding:5px 8px;border-radius:6px}
-.tag.fix{background:var(--cobalt-bg);color:var(--cobalt)}
-.tag.imp{background:var(--wine-bg);color:var(--wine)}
-.tag.dec{background:var(--amber-bg);color:var(--amber)}
-code{font:400 .86em var(--mono);background:var(--paper-2);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
-.tw{overflow-x:auto;border-radius:12px;box-shadow:0 0 0 1px var(--line);background:var(--win);margin-top:12px}
-table{border-collapse:collapse;width:100%;min-width:620px;font-size:.9rem}
-th,td{padding:10px 12px;border-bottom:1px solid #E3E8E3;text-align:left;vertical-align:top}
-th{font-weight:500;color:var(--muted);background:var(--win-bar)}
-tr:last-child td{border-bottom:0}
-td.n{font-family:var(--mono);font-size:.84rem;white-space:nowrap}
-.note{font-size:.9rem;color:var(--muted);max-width:74ch}
-footer{margin:80px 0 0;padding:26px 0 40px;border-top:1px solid var(--line);color:var(--muted);font-size:.92rem}
-footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
-@media (max-width:820px){.path{grid-template-columns:1fr 1fr}.step:nth-child(2){border-right:0}.step:nth-child(-n+2){border-bottom:1px solid var(--line)}}
-@media (max-width:520px){.wrap{padding:0 16px}.path{grid-template-columns:1fr}.step{border-right:0;border-bottom:1px solid var(--line)}.finding{grid-template-columns:1fr;gap:4px}}
-.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:30px}
-.card{background:var(--win);border-radius:14px;box-shadow:0 0 0 1px var(--line);padding:22px 22px 20px;display:flex;flex-direction:column;text-decoration:none;color:var(--ink);transition:box-shadow .2s var(--ease-out),transform .2s var(--ease-out)}
-.card:hover{box-shadow:0 0 0 1px var(--cobalt),0 8px 24px rgba(24,32,29,.08);transform:translateY(-2px)}
-.card:focus-visible{outline:2px solid var(--cobalt);outline-offset:3px}
-.card .k{font:500 .74rem var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
-.card .v{font:600 2.3rem/1 var(--display);letter-spacing:-.02em;margin:14px 0 4px}
-.card .v .bad{color:var(--wine)}.card .v .good{color:var(--cobalt)}
-.card h3{font:600 1.08rem/1.35 var(--text);margin:10px 0 6px}
-.card p{margin:0;color:var(--muted);font-size:.95rem;flex:1}
-.card .go{margin-top:16px;font:500 .88rem var(--text);color:var(--cobalt)}
-.me{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;margin-top:8px}
-.me ul{margin:0;padding-left:18px}.me li{margin:0 0 8px}
-@media (max-width:860px){.cards{grid-template-columns:1fr}.me{grid-template-columns:1fr;gap:8px}}
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+body{margin:0;background:var(--canvas);color:var(--ink);font:400 16px/1.6 var(--sans);overflow-x:hidden}
+a{color:inherit}
+code{font:400 .9em var(--mono);background:var(--violet-soft);color:var(--violet-ink);padding:1px 5px;border-radius:4px}
+.frame{max-width:1240px;margin:0 auto;border-left:1px solid var(--line);border-right:1px solid var(--line);min-height:100vh}
+.bar{display:flex;align-items:center;justify-content:space-between;padding:18px 32px;border-bottom:1px solid var(--line);font-size:14px}
+.bar b{font-weight:600}
+.bar span{color:var(--muted)}
+.bar nav{display:flex;gap:22px}
+.bar nav a{text-decoration:none;color:var(--ink-2)}
+.bar nav a:hover{color:var(--violet-ink)}
+
+.hero{padding:48px 32px 28px;text-align:center}
+.from{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-2);margin-bottom:16px}
+.from i{width:8px;height:8px;border-radius:2px;background:var(--violet);transform:rotate(45deg)}
+h1{font:400 clamp(2.4rem,1.5rem + 3vw,4rem)/1.02 var(--serif);letter-spacing:-.01em;margin:0 auto;max-width:22ch;text-wrap:balance}
+h1 em{font-style:italic;color:var(--violet-ink)}
+.lede{max-width:62ch;margin:16px auto 0;font-size:18px;color:var(--ink-2);text-wrap:pretty}
+.ctas{display:flex;gap:12px;justify-content:center;margin-top:22px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;height:42px;padding:0 18px;font:500 14px var(--sans);text-decoration:none;transition:transform .14s var(--ease-out),background .2s}
+.btn:active{transform:scale(.97)}
+.btn.solid{background:var(--ink);color:#fff}
+.btn.solid:hover{background:#262626}
+.btn.dash{border:1px dashed var(--ink-2);color:var(--ink)}
+.btn.dash:hover{border-style:solid}
+.btn:focus-visible,.seg button:focus-visible,a:focus-visible{outline:2px solid var(--violet);outline-offset:3px}
+
+.viewer{margin:40px 32px 0;border:1px solid var(--line-2);border-radius:14px;background:var(--canvas);box-shadow:0 1px 0 var(--line),0 30px 70px -40px rgba(76,34,201,.35);overflow:hidden;text-align:left}
+.vhead{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 18px;border-bottom:1px solid var(--line);background:var(--wash);flex-wrap:wrap}
+.vtitle{font:500 13px var(--mono);color:var(--ink-2)}
+.vtitle b{color:var(--ink);font-weight:500}
+.seg{display:inline-flex;border:1px solid var(--line-2);border-radius:9px;padding:3px;background:#fff}
+.seg button{border:0;background:transparent;font:500 13px var(--sans);color:var(--ink-2);padding:7px 14px;border-radius:6px;cursor:pointer;transition:background .2s var(--ease-out),color .2s}
+.seg button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.vbody{display:grid;grid-template-columns:minmax(0,1fr) 240px}
+.rows{padding:10px 0}
+.row{display:grid;grid-template-columns:230px minmax(0,1fr);align-items:center;gap:18px;padding:11px 18px;border-bottom:1px dashed var(--line)}
+.row:last-child{border-bottom:0}
+.rl{font-size:14px;line-height:1.35}
+.rl small{display:block;color:var(--muted);font:400 12px var(--mono);margin-top:3px}
+.strip{display:flex;gap:6px;align-items:stretch;min-width:0}
+.blk{height:34px;border-radius:5px;display:flex;align-items:center;padding:0 9px;font:500 11.5px var(--mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.u{background:#F1F1F1;color:var(--ink-2);flex:0 0 74px}
+.l{background:#E9E5F8;color:#5A4A93;flex:0 0 54px}
+.t{flex:1 1 0;position:relative;transition:background .45s var(--ease-out),color .45s,border-color .45s}
+.t.ok{background:var(--violet);color:#fff}
+.t.lost{background:transparent;border:1.5px dashed #E0A3B0;color:var(--red)}
+.fix .t.lost{background:var(--violet-ink);border-color:transparent;color:#fff;box-shadow:0 0 0 3px var(--violet-mid)}
+.t .tag{position:absolute;right:7px;top:50%;font:500 10px var(--sans);background:#fff;color:var(--violet-ink);padding:2px 7px;border-radius:99px;opacity:0;transform:translate(4px,-50%);transition:opacity .35s var(--ease-out) .15s,transform .35s var(--ease-out) .15s}
+.fix .t.lost .tag{opacity:1;transform:translate(0,-50%)}
+.t .a,.t .b{position:absolute;left:9px;right:9px;overflow:hidden;text-overflow:ellipsis;transition:opacity .35s var(--ease-out),transform .35s var(--ease-out)}
+.t .b{opacity:0;transform:translateY(6px)}
+.fix .t.lost .a{opacity:0;transform:translateY(-6px)}
+.fix .t.lost .b{opacity:1;transform:none}
+.e{flex:0 0 92px;background:#F6F6F6;color:var(--muted)}
+.e.end{background:#fff;border:1px solid var(--line-2)}
+.side{border-left:1px solid var(--line);padding:22px 20px;display:flex;flex-direction:column;gap:18px;background:var(--wash)}
+.count{font:400 64px/1 var(--serif);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.count .n{color:var(--red);transition:color .4s}
+.fix .count .n{color:var(--violet-ink)}
+.side p{margin:0;font-size:14px;color:var(--ink-2)}
+.side .key{display:grid;gap:8px;font-size:13px;color:var(--ink-2)}
+.side .key span{display:flex;align-items:center;gap:8px}
+.side .key i{width:22px;height:12px;border-radius:3px;display:inline-block}
+.k1{background:var(--violet)}.k2{border:1.5px dashed #E0A3B0}.k3{background:var(--violet-ink);box-shadow:0 0 0 2px var(--violet-mid)}
+.side .key .fx{display:none}.fix .side .key .fx{display:flex}
+.side a{font-size:14px;color:var(--violet-ink);font-weight:500}
+.cap{padding:12px 18px;border-top:1px solid var(--line);font-size:13px;color:var(--muted);background:#fff}
+
+section{padding:96px 32px 0}
+.split{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:56px;align-items:start}
+.num{font:italic 400 17px var(--serif);color:var(--violet-ink)}
+h2{font:400 clamp(2rem,1.5rem + 1.8vw,3rem)/1.05 var(--serif);letter-spacing:-.01em;margin:6px 0 14px;text-wrap:balance}
+.split p{color:var(--ink-2);margin:0 0 14px;max-width:46ch}
+.more{display:inline-flex;gap:6px;color:var(--violet-ink);font-weight:500;text-decoration:none;border-bottom:1px solid var(--violet-mid);padding-bottom:2px}
+.more:hover{border-color:var(--violet-ink)}
+.ci{border:1px solid var(--line-2);border-radius:12px;overflow:hidden;font:400 13.5px/1.5 var(--mono)}
+.ci header{display:flex;justify-content:space-between;gap:12px;padding:12px 16px;background:var(--ink);color:#EDEDED;font-size:12.5px}
+.ci header b{color:#7BE0A9;font-weight:500;white-space:nowrap}
+.ci ol{list-style:none;margin:0;padding:6px 0}
+.ci li{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:10px;padding:8px 16px;border-bottom:1px solid #F0F0F0}
+.ci li:last-child{border-bottom:0}
+.ci li::before{content:"✓";color:var(--green);font-weight:500}
+.ci li span:last-child{color:var(--muted)}
+.gaps{list-style:none;margin:0;padding:0;counter-reset:g}
+.gaps li{display:grid;grid-template-columns:56px minmax(0,1fr);gap:8px;padding:18px 0;border-top:1px solid var(--line)}
+.gaps li:last-child{border-bottom:1px solid var(--line)}
+.gaps li::before{counter-increment:g;content:counter(g,decimal-leading-zero);font:400 28px/1 var(--serif);color:var(--violet-ink)}
+.gaps b{font-weight:600}
+.gaps p{margin:4px 0 0;color:var(--ink-2);font-size:15px;max-width:none}
+.note{max-width:720px;margin:0 auto;text-align:left}
+.note p{font:400 clamp(1.35rem,1.1rem + .9vw,1.75rem)/1.4 var(--serif);margin:0 0 18px;color:var(--ink)}
+.note p.small{font:400 15px/1.6 var(--sans);color:var(--ink-2)}
+.sig{font:italic 400 30px var(--serif);color:var(--violet-ink);margin-top:6px}
+footer{margin-top:96px;padding:22px 32px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+footer a{color:var(--ink-2)}
+
+.rise>*{opacity:0;transform:translateY(18px);animation:rise .9s var(--ease-expo) forwards}
+.rise>*:nth-child(2){animation-delay:80ms}.rise>*:nth-child(3){animation-delay:160ms}.rise>*:nth-child(4){animation-delay:240ms}
+.viewer{opacity:0;transform:translateY(28px) scale(.985);animation:rise 1s var(--ease-expo) .3s forwards}
+@keyframes rise{to{opacity:1;transform:none}}
+
+@media (max-width:980px){
+  .vbody{grid-template-columns:1fr}
+  .side{border-left:0;border-top:1px solid var(--line);flex-direction:row;flex-wrap:wrap;align-items:center}
+  .split{grid-template-columns:1fr;gap:24px}
+}
+@media (max-width:640px){
+  .bar{padding:14px 16px}.bar span{display:none}.bar nav{gap:14px;font-size:13px}
+  .hero{padding:48px 16px 8px}
+  .viewer{margin:36px 12px 0}
+  .row{grid-template-columns:1fr;gap:8px;padding:12px 14px}
+  .hide-s{display:none}.u{flex-basis:46px}.l{flex-basis:36px}.e{flex-basis:76px}
+  .blk{font-size:10.5px;padding:0 7px}
+  .t .a,.t .b{left:7px;right:7px}
+  .vhead{padding:12px 14px}
+  section{padding:72px 16px 0}
+  footer{padding:20px 16px}
+  .ci li{grid-template-columns:18px minmax(0,1fr)}
+  .ci li span:last-child{grid-column:2}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-delay:0ms!important;transition-duration:.01ms!important}}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header class="top">
-    <span><b>Nitesh Kumar Yadav</b> · for the Agnost AI Growth Lead role</span>
-    <nav aria-label="Page"><a href="#work">Work</a><a href="#me">About</a></nav>
-  </header>
-
-  <div class="hero">
-    <h1>I set up Agnost the way your customers do, and tested it.</h1>
-    <p class="lede">Instead of a plan, three things that are already done. <strong>Each one is tested, and nothing was sent to your servers or posted anywhere.</strong> About two minutes to read.</p>
+<div class="frame">
+  <div class="bar">
+    <div><b>Nitesh Kumar Yadav</b> <span>for the Growth Lead role at Agnost AI</span></div>
+    <nav aria-label="Page"><a href="#openai">OpenAI listing</a><a href="#audit">Audit</a><a href="#me">About</a></nav>
   </div>
 
-  <section id="work" style="padding-top:8px">
-    <div class="cards">
-      <a class="card" href="/pipecat-tool-calls">
-        <span class="k">1 · Product gap, fixed</span>
-        <span class="v"><span class="bad">5/10</span> → <span class="good">10/10</span></span>
-        <h3>Pipecat tool calls Agnost can't see</h3>
-        <p>Following your Pipecat docs exactly, tool calls with no LLM request after them (end_call and transfer tools, hangups, interruptions, and Claude bots) aren't recoverable. An 80-line observer fixes it. One-command test.</p>
-        <span class="go">See results and code →</span>
-      </a>
-      <a class="card" href="https://github.com/techi101/agnost-adk-guide-check/tree/main/channels/openai-agents-test">
-        <span class="k">2 · Next docs listing</span>
-        <span class="v"><span class="good">9/9</span></span>
-        <h3>OpenAI Agents SDK listing evidence</h3>
-        <p>You got Agnost into Vercel's and Mastra's docs this month. OpenAI's tracing list (31 vendors) asks for compatibility evidence first, so I ran your AgnostTracingProcessor against the newest SDK. All checks pass.</p>
-        <span class="go">See the report →</span>
-      </a>
-      <a class="card" href="/onboarding-audit">
-        <span class="k">3 · Onboarding audit</span>
-        <span class="v">12</span>
-        <h3>Gaps between "paste this prompt" and a first event</h3>
-        <p>Skill recipes missing for frameworks your docs send people to, unanswered repo issues, pages missing from llms.txt, the MCP Registry. Each with a prepared fix, including 8 skill patches.</p>
-        <span class="go">See all 12 →</span>
-      </a>
+  <div class="hero">
+    <div class="rise">
+      <div class="from"><i></i>Tested on Pipecat 1.17, 27 Nov 2026</div>
+      <h1>I ran Agnost on a voice bot. <em>Half the tool calls</em> went missing.</h1>
+      <p class="lede">Following your Pipecat docs exactly, the tool calls that end or hand off a call can't be recovered by Agnost, and those are the calls where something went wrong. I wrote an 80&#8209;line fix. Flip the switch.</p>
+      <div class="ctas">
+        <a class="btn solid" href="/pipecat-tool-calls">See the test and the code</a>
+        <a class="btn dash" href="https://github.com/techi101/agnost-adk-guide-check/tree/main/channels/pipecat-test">Run it yourself</a>
+      </div>
     </div>
-    <p class="note" style="margin-top:16px">Also ready, to walk through on a call: 12 more voice-agent accounts with verified hooks (one has a person hand-reviewing 150 calls a week), custom prospect demos, and 10 community threads with reply drafts. Kept private because they name companies.</p>
+
+    <div class="viewer" id="viewer" role="region" aria-label="Trace of the nine test scenarios">
+      <div class="vhead">
+        <div class="vtitle"><b>pipecat-test</b> / 9 scenarios<span class="hide-s"> / 10 tool calls</span></div>
+        <div class="seg" role="group" aria-label="Setup">
+          <button type="button" id="b-docs" aria-pressed="true">Your docs setup</button>
+          <button type="button" id="b-fix" aria-pressed="false">With the fix</button>
+        </div>
+      </div>
+      <div class="vbody">
+        <div class="rows" id="rows"></div>
+        <aside class="side">
+          <div>
+            <div class="count" aria-live="polite"><span class="n" id="n">5</span>/10</div>
+            <p id="cap">tool calls Agnost can recover</p>
+          </div>
+          <div class="key">
+            <span><i class="k1"></i>tool call in the trace</span>
+            <span><i class="k2"></i>tool call not recoverable</span>
+            <span class="fx"><i class="k3"></i>recovered by the fix</span>
+          </div>
+          <a href="/pipecat-tool-calls#fix">How the fix works →</a>
+        </aside>
+      </div>
+      <div class="cap">Recorded locally against a stand-in for otel.agnost.ai; nothing was sent to your servers. Claude rows: the call arrives only in Anthropic's format, which your docs say recovery doesn't cover.</div>
+    </div>
+  </div>
+
+  <section id="openai">
+    <div class="split">
+      <div>
+        <div class="num">Next listing</div>
+        <h2>You got into Vercel's and Mastra's docs. OpenAI's list is next.</h2>
+        <p>The OpenAI Agents SDK lists 31 tracing vendors. Braintrust, Langfuse and Noveum are there; Agnost isn't. Since September a listing needs compatibility evidence, so I ran your <code>AgnostTracingProcessor</code> against the newest SDK, 0.26.0, newer than anything on your docs page.</p>
+        <a class="more" href="https://github.com/techi101/agnost-adk-guide-check/tree/main/channels/openai-agents-test">Read the report →</a>
+      </div>
+      <div class="ci" aria-label="Compatibility checks">
+        <header><span>agnost 0.2.2 × openai-agents 0.26.0</span><b>9 passed</b></header>
+        <ol>
+          <li><span>Run with a handoff and a tool call</span><span>1 session, 8 events</span></li>
+          <li><span>Streamed run</span><span>same events</span></li>
+          <li><span>Tool and handoff nested under the right agent</span><span>ok</span></li>
+          <li><span>Conversation and user IDs carried through</span><span>ok</span></li>
+          <li><span>trace_include_sensitive_data=False</span><span>no content sent</span></li>
+          <li><span>include_content=False</span><span>no content sent</span></li>
+          <li><span>Capture API returns 500</span><span>agent unaffected</span></li>
+          <li><span>Capture API unreachable</span><span>flush stops at 5 s</span></li>
+          <li><span>shutdown()</span><span>everything delivered</span></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section id="audit">
+    <div class="split">
+      <div>
+        <div class="num">Onboarding audit</div>
+        <h2>Twelve gaps between “paste this prompt” and a first event.</h2>
+        <p>I walked your onboarding as a new developer would. Each gap comes with a prepared fix, including eight patches for your skill. The four that touch the most new users:</p>
+        <a class="more" href="/onboarding-audit">All twelve, with evidence →</a>
+      </div>
+      <ol class="gaps">
+        <li><div><b>The skill has no recipe for frameworks your docs send people to.</b><p>Your Pipecat, Google ADK and LlamaIndex pages say “install the skill”; it has nothing for them.</p></div></li>
+        <li><div><b>Six issues on the skills repo with no reply since September.</b><p>Anyone checking the repo before installing sees them. The patches close five.</p></div></li>
+        <li><div><b>Eleven docs pages missing from llms.txt.</b><p>Retell, Pipecat, Google ADK and LlamaIndex among them, so AI assistants can't find them.</p></div></li>
+        <li><div><b>Your hosted MCP server isn't in the official MCP Registry.</b><p>Braintrust's is. A validated server.json is ready; it needs one DNS record.</p></div></li>
+      </ol>
+    </div>
   </section>
 
   <section id="me">
-    <h2>About me</h2>
-    <div class="me">
-      <ul>
-        <li>Final-year B.Tech, Electronics and Communication (AI and ML), NSUT Delhi. Graduating July 2027; happy to move to Bengaluru.</li>
-        <li>Merged code in Google ADK (4 commits), CPython, MongoDB, Confluent Kafka, Uber CausalML and promptfoo, so I know how framework maintainers review.</li>
-      </ul>
-      <ul>
-        <li>I build agents that do real work: everything on this page was found and tested with agents I direct, then checked by hand.</li>
-        <li>Co-head of PR at IIF, NSUT: led outreach to colleges and student communities for the Delhi Government Ideathon (₹10 lakh prize pool).</li>
-      </ul>
+    <div class="note">
+      <p>I'm a final-year student at NSUT Delhi, graduating July 2027, and happy to move to Bengaluru. I build with agents and check their work by hand; everything on this page was made that way.</p>
+      <p class="small">Merged code in Google ADK (4 commits), CPython, MongoDB, Confluent Kafka, Uber CausalML and promptfoo. Co-head of PR at IIF, NSUT, where I led outreach to colleges and student communities for the Delhi Government Ideathon (₹10 lakh prize pool). I also have twelve voice-agent accounts with verified hooks to walk through on a call; they name companies, so they're not on this page.</p>
+      <div class="sig">Nitesh</div>
     </div>
   </section>
-</div>
-<footer>
-  <div class="wrap">
-    <span>Nitesh Kumar Yadav · <a href="https://github.com/techi101">github.com/techi101</a> · 27 Nov 2026</span>
+
+  <footer>
+    <span>Nitesh Kumar Yadav · <a href="https://github.com/techi101">github.com/techi101</a></span>
     <span>Independent work, not affiliated with Agnost AI.</span>
-  </div>
-</footer>
+  </footer>
+</div>
+
+<script>
+const S=[
+ ["Order lookup, bot answers","OpenAI, baseline",[["get_order_status",1]],"reply"],
+ ["Two lookups in one reply","OpenAI, parallel",[["order A",1],["order B",1]],"reply"],
+ ["Bot ends the call","run_llm=False",[["end_call",0]],"call ends"],
+ ["Caller hangs up mid-lookup","runner.cancel()",[["get_order_status",0]],"hung up"],
+ ["Caller interrupts a slow tool","cancelled",[["get_order_status",0]],"interrupted"],
+ ["Tool times out","timeout_secs",[["get_order_status",1]],"reply"],
+ ["Tool throws an error","503 from backend",[["get_order_status",1]],"reply"],
+ ["Order lookup on Claude","Anthropic, baseline",[["get_order_status",0]],"reply"],
+ ["Claude bot ends the call","Anthropic, run_llm=False",[["end_call",0]],"call ends"]
+];
+const rows=document.getElementById('rows');
+rows.innerHTML=S.map(([t,s,tools,end])=>`<div class="row"><div class="rl">${t}<small>${s}</small></div><div class="strip"><div class="blk u">user</div><div class="blk l">llm</div>${tools.map(([n,ok])=>ok?`<div class="blk t ok">${n}</div>`:`<div class="blk t lost"><span class="a">not recoverable</span><span class="b">${n}</span><span class="tag">recovered</span></div>`).join('')}<div class="blk e${end==='reply'?'':' end'}">${end}</div></div></div>`).join('');
+const v=document.getElementById('viewer'),n=document.getElementById('n'),cap=document.getElementById('cap'),bd=document.getElementById('b-docs'),bf=document.getElementById('b-fix');
+const still=matchMedia('(prefers-reduced-motion: reduce)').matches;
+let timer,auto=true;
+function set(fix){v.classList.toggle('fix',fix);bd.setAttribute('aria-pressed',String(!fix));bf.setAttribute('aria-pressed',String(fix));
+ clearInterval(timer);const to=fix?10:5;let cur=+n.textContent;
+ if(still){n.textContent=to}else{timer=setInterval(()=>{cur+=cur<to?1:-1;n.textContent=cur;if(cur===to)clearInterval(timer)},70)}
+ cap.textContent=fix?'tool calls in the trace, with the fix':'tool calls Agnost can recover';}
+bd.onclick=()=>{auto=false;set(false)};bf.onclick=()=>{auto=false;set(true)};
+if(!still){new IntersectionObserver(([e],o)=>{if(e.isIntersecting){o.disconnect();setTimeout(()=>{if(auto)set(true)},2600)}},{threshold:.5}).observe(v);}
+</script>
 </body>
 </html>
