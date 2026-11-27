@@ -1,0 +1,14 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "ai.agnost/mcp",
+  "title": "Agnost AI",
+  "description": "Query production AI agent conversations, failing tools, failure patterns and fixes in Agnost AI.",
+  "version": "1.0.0",
+  "websiteUrl": "https://docs.agnost.ai/agnost-mcp-server",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://mcp.agnost.ai/mcp"
+    }
+  ]
+}

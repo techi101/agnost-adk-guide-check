@@ -73,13 +73,13 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
   </header>
 
   <div class="hero">
-    <h1>Ten gaps between "paste this prompt" and a customer's first event</h1>
+    <h1>Eleven gaps between "paste this prompt" and a customer's first event</h1>
     <p class="lede">I walked Agnost's onboarding path the way a new developer would on 27 Nov 2026: the homepage prompt, the <code>agnost-ai</code> skill it installs, the docs it links to, and the indexes AI assistants read. <strong>Every gap below has a fix already prepared.</strong> Nothing was posted or submitted anywhere.</p>
     <div class="path" role="list" aria-label="The onboarding path and findings per step">
       <div class="step" role="listitem"><span class="k">Step 1</span><b>Homepage prompt</b><span class="n">entry point · sales: 9, 10</span></div>
       <div class="step" role="listitem"><span class="k">Step 2</span><b>agnost-ai skill</b><span class="n">findings 1 to 4</span></div>
       <div class="step" role="listitem"><span class="k">Step 3</span><b>docs.agnost.ai</b><span class="n">findings 4 to 6</span></div>
-      <div class="step" role="listitem"><span class="k">Step 4</span><b>Platform listings</b><span class="n">findings 7 and 8</span></div>
+      <div class="step" role="listitem"><span class="k">Step 4</span><b>Platform listings</b><span class="n">findings 7, 8, 11</span></div>
     </div>
   </div>
 
@@ -156,6 +156,12 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
       <h3>At 1M events a month, Raindrop's list price is about 6.6x Agnost's</h3>
       <p>Raindrop Pro is $299/month plus $0.003 per event, so 1M events is about $3,299; Agnost Pro is $499 for 1M events (both from the vendors' own pages, 27 Nov 2026). Raindrop's simulations are labelled Beta; it is ahead on SOC 2 (Type II vs Agnost's Type I). The price gap isn't on agnost.ai's comparison pages yet: the blog has 28 comparison posts (Langfuse, LangSmith, Braintrust, Helicone, Datadog, Enterpret and more) and none for Raindrop, or for the voice testing tools (Cekura, Hamming, Coval, Roark). Fix: an "Agnost AI vs Raindrop" post drafted in the house style, with a disclosure line, every fact from each vendor's own page, and a fair "where Raindrop is stronger" section.</p>
     </div></div>
+    <div class="finding"><div class="num">11</div><div>
+      <div class="tags"><span class="tag imp">distribution</span><span class="tag fix">server.json ready</span></div>
+      <h3>Your hosted MCP server isn't in the official MCP Registry. Braintrust's and Raindrop's are.</h3>
+      <p>mcp.agnost.ai/mcp is live with OAuth 2.1 and dynamic client registration, which makes it an easy listing: no keys, just the URL. The <a href="https://registry.modelcontextprotocol.io/v0/servers?search=agnost">registry search</a> returns only unrelated "agnostic" servers; Braintrust (<code>io.github.braintrustdata/braintrust</code>) and Raindrop (<code>io.raindrop/mcp</code>) are listed.</p>
+      <p class="ev">Fix: a <code>server.json</code> for <code>ai.agnost/mcp</code> that validates against the registry's official schema with 0 errors, plus the publish steps from the registry's docs (an Ed25519 key, one DNS TXT record on agnost.ai, two commands). About 15 minutes for whoever holds the DNS.</p>
+    </div></div>
   </section>
 
   <section id="fine">
@@ -185,6 +191,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
         <tr><td>Pipecat listing (finding 7)</td><td>MDX page + docs.json line</td><td>API names checked against Pipecat v1.17.0</td></tr>
         <tr><td>"Agnost AI vs voice testing tools" post (finding 10)</td><td>Blog draft: what simulation platforms and Agnost each do best, pricing units side by side</td><td>Cekura, Coval, Roark, Bluejay and Hamming pricing pages read 27 Nov 2026</td></tr>
         <tr><td>"Agnost AI vs Raindrop" post (finding 10)</td><td>Blog draft in the existing comparison format</td><td>Agnost prices and features checked against agnost.ai; Raindrop facts from its homepage</td></tr>
+        <tr><td>MCP Registry listing (finding 11)</td><td><code>server.json</code> + publish steps</td><td>Validated against the official schema: 0 errors</td></tr>
         <tr><td>Redaction (finding 9)</td><td>Python recipes</td><td>7 tests pass</td></tr>
       </tbody></table></div>
     <p class="note" style="margin-top:14px">The public skills repo is a mirror ("Sync skills from agnostai@…" on every commit), so a pull request there would be overwritten by the next sync. The patch is meant to be applied in the private repo; I can send it directly.</p>
