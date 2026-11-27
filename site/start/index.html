@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nitesh for Agnost</title>
+<meta name="description" content="Tested Agnost's Pipecat setup (5 of 10 tool calls unrecoverable, fixed to 10 of 10), built OpenAI Agents SDK listing evidence, and audited onboarding: 12 gaps with fixes.">
+<meta property="og:title" content="I set up Agnost the way your customers do, and tested it">
+<meta property="og:description" content="Pipecat: 5 of 10 tool calls unrecoverable, fixed to 10 of 10. OpenAI Agents SDK listing evidence: 9 checks pass. 12 onboarding gaps with fixes.">
+<meta property="og:image" content="https://agnost-adk-guide-check.vercel.app/start/og.png">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..700&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#EDF0EA; --paper-2:#E3E8E1; --ink:#18201D; --muted:#56635E; --line:#CCD4CE;
+  --cobalt:#2747C9; --cobalt-bg:#E3E8FA; --wine:#A3204F; --wine-bg:#F6E3EA; --amber:#8A5A00; --amber-bg:#F6ECD6;
+  --win:#FBFCFA; --win-bar:#F1F4F0;
+  --display:"Bricolage Grotesque",Georgia,serif; --text:"Geist",ui-sans-serif,sans-serif; --mono:"Geist Mono",ui-monospace,monospace;
+  --step-0:clamp(1rem,.96rem + .2vw,1.0625rem); --step-1:clamp(1.15rem,1.05rem + .5vw,1.35rem); --step-3:clamp(1.9rem,1.4rem + 2.4vw,3.1rem);
+  --ease-out:cubic-bezier(.23,1,.32,1);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;overflow-x:hidden;background:var(--paper);color:var(--ink);font:400 var(--step-0)/1.6 var(--text)}
+a{color:var(--cobalt);text-underline-offset:3px;overflow-wrap:anywhere}
+a:focus-visible{outline:2px solid var(--cobalt);outline-offset:3px;border-radius:4px}
+.wrap{max-width:1040px;margin:0 auto;padding:0 24px}
+header.top{display:flex;justify-content:space-between;align-items:center;padding:22px 0;font-size:.95rem;color:var(--muted);gap:12px;flex-wrap:wrap}
+header.top b{color:var(--ink);font-weight:600}
+header.top nav{display:flex;gap:18px;flex-wrap:wrap}
+header.top nav a{color:var(--muted);text-decoration:none}
+.hero{padding:44px 0 28px}
+h1{font:600 var(--step-3)/1.06 var(--display);letter-spacing:-.025em;margin:0 0 18px;max-width:22ch;text-wrap:balance}
+.lede{font-size:var(--step-1);line-height:1.5;color:var(--muted);max-width:64ch;margin:0}
+.lede strong{color:var(--ink);font-weight:500}
+.path{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;margin:30px 0 0;border-radius:14px;overflow:hidden;box-shadow:0 0 0 1px var(--line)}
+.step{background:var(--win);padding:16px 16px 18px;min-width:0;border-right:1px solid var(--line)}
+.step:last-child{border-right:0}
+.step .k{font:500 .74rem var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.step b{display:block;font:600 1.02rem/1.3 var(--text);margin:4px 0 6px}
+.step .n{display:inline-block;font:600 .8rem var(--mono);padding:3px 8px;border-radius:999px;background:var(--wine-bg);color:var(--wine)}
+section{padding:60px 0 0}
+h2{font:600 clamp(1.45rem,1.2rem + 1vw,2rem)/1.15 var(--display);letter-spacing:-.02em;margin:0 0 8px}
+.sub{color:var(--muted);margin:0 0 18px;max-width:70ch}
+.finding{background:var(--win);border-radius:12px;box-shadow:0 0 0 1px var(--line);padding:20px 22px;margin-top:14px;display:grid;grid-template-columns:44px minmax(0,1fr);gap:14px}
+.finding .num{font:600 1.4rem/1 var(--display);color:var(--muted)}
+.finding h3{font:600 1.08rem/1.35 var(--text);margin:0 0 6px}
+.finding p{margin:0 0 8px;max-width:76ch}
+.finding .ev{font-size:.9rem;color:var(--muted)}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.tag{font:500 .72rem/1 var(--mono);padding:5px 8px;border-radius:6px}
+.tag.fix{background:var(--cobalt-bg);color:var(--cobalt)}
+.tag.imp{background:var(--wine-bg);color:var(--wine)}
+.tag.dec{background:var(--amber-bg);color:var(--amber)}
+code{font:400 .86em var(--mono);background:var(--paper-2);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
+.tw{overflow-x:auto;border-radius:12px;box-shadow:0 0 0 1px var(--line);background:var(--win);margin-top:12px}
+table{border-collapse:collapse;width:100%;min-width:620px;font-size:.9rem}
+th,td{padding:10px 12px;border-bottom:1px solid #E3E8E3;text-align:left;vertical-align:top}
+th{font-weight:500;color:var(--muted);background:var(--win-bar)}
+tr:last-child td{border-bottom:0}
+td.n{font-family:var(--mono);font-size:.84rem;white-space:nowrap}
+.note{font-size:.9rem;color:var(--muted);max-width:74ch}
+footer{margin:80px 0 0;padding:26px 0 40px;border-top:1px solid var(--line);color:var(--muted);font-size:.92rem}
+footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+@media (max-width:820px){.path{grid-template-columns:1fr 1fr}.step:nth-child(2){border-right:0}.step:nth-child(-n+2){border-bottom:1px solid var(--line)}}
+@media (max-width:520px){.wrap{padding:0 16px}.path{grid-template-columns:1fr}.step{border-right:0;border-bottom:1px solid var(--line)}.finding{grid-template-columns:1fr;gap:4px}}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:30px}
+.card{background:var(--win);border-radius:14px;box-shadow:0 0 0 1px var(--line);padding:22px 22px 20px;display:flex;flex-direction:column;text-decoration:none;color:var(--ink);transition:box-shadow .2s var(--ease-out),transform .2s var(--ease-out)}
+.card:hover{box-shadow:0 0 0 1px var(--cobalt),0 8px 24px rgba(24,32,29,.08);transform:translateY(-2px)}
+.card:focus-visible{outline:2px solid var(--cobalt);outline-offset:3px}
+.card .k{font:500 .74rem var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.card .v{font:600 2.3rem/1 var(--display);letter-spacing:-.02em;margin:14px 0 4px}
+.card .v .bad{color:var(--wine)}.card .v .good{color:var(--cobalt)}
+.card h3{font:600 1.08rem/1.35 var(--text);margin:10px 0 6px}
+.card p{margin:0;color:var(--muted);font-size:.95rem;flex:1}
+.card .go{margin-top:16px;font:500 .88rem var(--text);color:var(--cobalt)}
+.me{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;margin-top:8px}
+.me ul{margin:0;padding-left:18px}.me li{margin:0 0 8px}
+@media (max-width:860px){.cards{grid-template-columns:1fr}.me{grid-template-columns:1fr;gap:8px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span><b>Nitesh Kumar Yadav</b> · for the Agnost AI Growth Lead role</span>
+    <nav aria-label="Page"><a href="#work">Work</a><a href="#me">About</a></nav>
+  </header>
+
+  <div class="hero">
+    <h1>I set up Agnost the way your customers do, and tested it.</h1>
+    <p class="lede">Instead of a plan, three things that are already done. <strong>Each one is tested, and nothing was sent to your servers or posted anywhere.</strong> About two minutes to read.</p>
+  </div>
+
+  <section id="work" style="padding-top:8px">
+    <div class="cards">
+      <a class="card" href="/pipecat-tool-calls">
+        <span class="k">1 · Product gap, fixed</span>
+        <span class="v"><span class="bad">5/10</span> → <span class="good">10/10</span></span>
+        <h3>Pipecat tool calls Agnost can't see</h3>
+        <p>Following your Pipecat docs exactly, tool calls with no LLM request after them (end_call and transfer tools, hangups, interruptions, and Claude bots) aren't recoverable. An 80-line observer fixes it. One-command test.</p>
+        <span class="go">See results and code →</span>
+      </a>
+      <a class="card" href="https://github.com/techi101/agnost-adk-guide-check/tree/main/channels/openai-agents-test">
+        <span class="k">2 · Next docs listing</span>
+        <span class="v"><span class="good">9/9</span></span>
+        <h3>OpenAI Agents SDK listing evidence</h3>
+        <p>You got Agnost into Vercel's and Mastra's docs this month. OpenAI's tracing list (31 vendors) asks for compatibility evidence first, so I ran your AgnostTracingProcessor against the newest SDK. All checks pass.</p>
+        <span class="go">See the report →</span>
+      </a>
+      <a class="card" href="/onboarding-audit">
+        <span class="k">3 · Onboarding audit</span>
+        <span class="v">12</span>
+        <h3>Gaps between "paste this prompt" and a first event</h3>
+        <p>Skill recipes missing for frameworks your docs send people to, unanswered repo issues, pages missing from llms.txt, the MCP Registry. Each with a prepared fix, including 8 skill patches.</p>
+        <span class="go">See all 12 →</span>
+      </a>
+    </div>
+    <p class="note" style="margin-top:16px">Also ready, to walk through on a call: 12 more voice-agent accounts with verified hooks (one has a person hand-reviewing 150 calls a week), custom prospect demos, and 10 community threads with reply drafts. Kept private because they name companies.</p>
+  </section>
+
+  <section id="me">
+    <h2>About me</h2>
+    <div class="me">
+      <ul>
+        <li>Final-year B.Tech, Electronics and Communication (AI and ML), NSUT Delhi. Graduating July 2027; happy to move to Bengaluru.</li>
+        <li>Merged code in Google ADK (4 commits), CPython, MongoDB, Confluent Kafka, Uber CausalML and promptfoo, so I know how framework maintainers review.</li>
+      </ul>
+      <ul>
+        <li>I build agents that do real work: everything on this page was found and tested with agents I direct, then checked by hand.</li>
+        <li>Co-head of PR at IIF, NSUT: led outreach to colleges and student communities for the Delhi Government Ideathon (₹10 lakh prize pool).</li>
+      </ul>
+    </div>
+  </section>
+</div>
+<footer>
+  <div class="wrap">
+    <span>Nitesh Kumar Yadav · <a href="https://github.com/techi101">github.com/techi101</a> · 28 Nov 2026</span>
+    <span>Independent work, not affiliated with Agnost AI.</span>
+  </div>
+</footer>
+</body>
+</html>
