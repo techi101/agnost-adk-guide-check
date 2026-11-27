@@ -168,6 +168,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
         <tr><td>AI crawlers (GPTBot, ClaudeBot, PerplexityBot, Google-Extended, OAI-SearchBot)</td><td>All allowed by robots.txt and served 200 on the homepage and blog; Content-Signal allows AI input</td></tr>
         <tr><td>232 blog posts: canonical, share image, structured data, one H1, unique titles</td><td>All present. Only nit: 157 meta descriptions run past ~160 characters, so search results cut them off</td></tr>
         <tr><td>Telnyx docs page</td><td>Live at /telnyx-voice and listed in llms.txt</td></tr>
+        <tr><td>SDK packages: agnost and agnost-mcp (PyPI), agnost and agnostai (npm)</td><td>All MIT with full READMEs. Two small notes: the npm packages have no <code>repository</code> field, which supply-chain scanners flag; and they need Node 20+, while the skill's scripts run on Node 18, so a Node 18 app can pass detection and then fail the install</td></tr>
       </tbody></table></div>
   </section>
 
