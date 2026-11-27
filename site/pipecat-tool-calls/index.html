@@ -78,7 +78,7 @@ td.zero{color:var(--wine);font-weight:600}td.ok{color:var(--cobalt);font-weight:
 <div class="wrap">
   <header class="top">
     <span><b>Pipecat tool-call test</b> for Agnost AI</span>
-    <nav aria-label="Page"><a href="#results">Results</a><a href="#fix">The fix</a><a href="#reproduce">Reproduce</a><a href="/onboarding-audit">Onboarding audit</a></nav>
+    <nav aria-label="Page"><a href="#results">Results</a><a href="#fix">The fix</a><a href="#upstream">Upstream</a><a href="#reproduce">Reproduce</a><a href="/onboarding-audit">Onboarding audit</a></nav>
   </header>
 
   <div class="hero">
@@ -183,6 +183,11 @@ class AgnostToolSpanObserver(BaseObserver):
             self._done.add(call_id)
 </code></pre>
     <p class="note" style="margin-top:12px">Add it with <code>PipelineWorker(pipeline, observers=[AgnostToolSpanObserver()], enable_tracing=True, ...)</code>. Checked in the test: every tool span shares the conversation's trace and have the <code>turn</code> span as parent; the two parallel calls keep their own IDs, arguments and results. In the baseline cases Agnost now gets the call twice (the span and the next request's context), so the ingest should dedupe on <code>gen_ai.tool.call.id</code>, or the docs could say to use the observer instead of context recovery.</p>
+  </section>
+
+  <section id="upstream">
+    <h2>Why not wait for Pipecat?</h2>
+    <p class="sub">Pipecat has an open pull request that adds <code>function_call</code> spans: <a href="https://github.com/pipecat-ai/pipecat/pull/4266">#4266</a>, opened 9 Apr 2026 by the maker of finchvox, a Pipecat observability tool. As of 27 Nov it has no review, now conflicts with main, and has waited 232 days. Two things matter for Agnost if it ever lands: it names attributes <code>tool.function_name</code>, <code>tool.arguments</code> and <code>tool.result</code>, not the <code>gen_ai.tool.*</code> names your ingest reads for other frameworks, so it needs a mapping; and its notes say the span for an async function call ends before the final result arrives. The observer works on the Pipecat release your customers run today.</p>
   </section>
 
   <section id="reproduce">
