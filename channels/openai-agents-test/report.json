@@ -1,0 +1,141 @@
+{
+ "versions": {
+  "agnost": "0.2.2",
+  "openai-agents": "0.26.0",
+  "python": "3.12.10"
+ },
+ "1_basic_run": {
+  "final_output": "Your order A-1042 shipped yesterday.",
+  "flushed": null,
+  "sessions": 1,
+  "events": 8,
+  "org_headers": [],
+  "event_names": [
+   "get_order_status",
+   "gpt-4.1-mini",
+   "handoff -> orders-agent",
+   "orders-agent",
+   "triage-agent"
+  ],
+  "has_tool_call": true,
+  "has_tool_args": true,
+  "has_tool_result": true,
+  "has_handoff": true,
+  "has_user_text": true,
+  "has_answer": true,
+  "sample_event": {
+   "event_id": "bc792e04-c356-4fe9-8b68-8087ff5523bc",
+   "session_id": "conv-basic",
+   "primitive_type": "llm",
+   "primitive_name": "gpt-4.1-mini",
+   "latency": 156,
+   "success": true,
+   "args": "[{\"content\": \"Route to the right agent.\", \"role\": \"system\"}, {\"role\": \"user\", \"content\": \"Where is my order A-1042?\"}]",
+   "result": "[{\"content\": null, \"refusal\": null, \"role\": \"assistant\", \"annotations\": null, \"audio\": null, \"function_call\": null, \"tool_calls\": [{\"id\": \"call_45449\", \"function\": {\"arguments\": \"{}\", \"name\": \"transfer_to_orders_agent\"}, \"type\": \"function\"}]}]",
+   "metadata": {
+    "framework": "openai-agents",
+    "openai_agents.trace_id": "trace_4c7040af520a45c1a1669171ae51c155",
+    "openai_agents.span_id": "span_b8679e6fb87b426187d7bb44",
+    "openai_agents.span_type": "generation",
+    "model": "gpt-4.1-mini",
+    "gen_ai.request.model": "gpt-4.1-mini",
+    "gen_ai.usage.input_tokens": "40",
+    "gen_ai.usage.output_tokens": "8",
+    "gen_ai.usage.total_tokens": "48",
+    "gen_ai.request.config": "{\"temperature\": null, \"top_p\": null, \"frequency_penalty\": null, \"presence_penalty\": null, \"tool_choice\": null, \"parallel_tool_calls\": null, \"truncation\": null, \"max_tokens\": null, \"reasoning\": null, \"verbosity\": null, \"metadata\": null, \"store\": null, \"prompt_cache_retention\": null, \"include_usage\": null, \"response_include\": null, \"top_logprobs\": null, \"retry\": null, \"context_management\": null, \"prompt_cache_options\": null, \"timeout\": null, \"base_url\": \"http://127.0.0.1:65386/v1/\"}"
+   },
+   "timestamp": 1795785845300,
+   "parent_id": "7b11d328-7959-474a-8319-f56a4730d345"
+  }
+ },
+ "2_streamed_run": {
+  "final_output": "Your order A-1042 shipped yesterday.",
+  "flushed": null,
+  "sessions": 1,
+  "events": 8,
+  "org_headers": [],
+  "event_names": [
+   "get_order_status",
+   "gpt-4.1-mini",
+   "handoff -> orders-agent",
+   "orders-agent",
+   "triage-agent"
+  ],
+  "has_tool_call": true,
+  "has_tool_args": true,
+  "has_tool_result": true,
+  "has_handoff": true,
+  "has_user_text": true,
+  "has_answer": true
+ },
+ "3_trace_include_sensitive_data_false": {
+  "final_output": "Your order A-1042 shipped yesterday.",
+  "sessions": 1,
+  "events": 8,
+  "org_headers": [],
+  "event_names": [
+   "get_order_status",
+   "gpt-4.1-mini",
+   "handoff -> orders-agent",
+   "orders-agent",
+   "triage-agent"
+  ],
+  "has_tool_call": true,
+  "has_tool_args": false,
+  "has_tool_result": false,
+  "has_handoff": true,
+  "has_user_text": false,
+  "has_answer": false
+ },
+ "4_include_content_false": {
+  "final_output": "Your order A-1042 shipped yesterday.",
+  "sessions": 1,
+  "events": 8,
+  "org_headers": [],
+  "event_names": [
+   "get_order_status",
+   "gpt-4.1-mini",
+   "handoff -> orders-agent",
+   "orders-agent",
+   "triage-agent"
+  ],
+  "has_tool_call": true,
+  "has_tool_args": false,
+  "has_tool_result": false,
+  "has_handoff": true,
+  "has_user_text": false,
+  "has_answer": false
+ },
+ "5_export_returns_500": {
+  "final_output": "Your order A-1042 shipped yesterday.",
+  "run_seconds": 0.06,
+  "flushed": null,
+  "flush_seconds": 0.1,
+  "posts_attempted": 10
+ },
+ "6_endpoint_unreachable": {
+  "final_output": "Your order A-1042 shipped yesterday.",
+  "run_seconds": 0.05,
+  "flushed": null,
+  "flush_seconds": 5.01
+ },
+ "7_shutdown_delivers": {
+  "shutdown_seconds": 0.08,
+  "sessions": 1,
+  "events": 8,
+  "org_headers": [],
+  "event_names": [
+   "get_order_status",
+   "gpt-4.1-mini",
+   "handoff -> orders-agent",
+   "orders-agent",
+   "triage-agent"
+  ],
+  "has_tool_call": true,
+  "has_tool_args": true,
+  "has_tool_result": true,
+  "has_handoff": true,
+  "has_user_text": true,
+  "has_answer": true
+ }
+}

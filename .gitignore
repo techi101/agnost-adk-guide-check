@@ -8,3 +8,6 @@ channels/mastra/test/node_modules/
 channels/mastra/test/received.json
 channels/mastra/test/package-lock.json
 channels/pipecat-test/received.json
+channels/openai-agents-test/received.json
+channels/openai-agents-test/run_out.txt
+channels/openai-agents-test/FAIL_MODE
