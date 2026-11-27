@@ -141,6 +141,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
       <div class="tags"><span class="tag dec">waiting in a queue</span></div>
       <h3>ADK docs PR #2650 is good; the queue isn't moving</h3>
       <p>It scores 98/100 on adk-docs' own integration-review checklist. The only finding: no ADK version stated, and on ADK 1.x the answer lands on a child span, not the root. 110 integration pages are waiting; no outside vendor's page has merged since 8 Sep. <a href="/pr-2650">Full review</a>.</p>
+      <p class="ev">The same 1.x gap is in docs.agnost.ai/google-adk itself. Fix: a drop-in plugin section that saves the root span when the user's message arrives and writes the answer there, plus <code>gen_ai.conversation.id</code> from the session. Tested offline on ADK 2.15.1 and 1.39.1: user, input, answer and conversation id land on the root in both (the current plugin misses the answer and conversation id on 1.39.1). The skill's ADK recipe gets the same change in patch 4.</p>
     </div></div>
 
     <div class="finding"><div class="num">09</div><div>
@@ -161,7 +162,8 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
     <div class="tw"><table>
       <thead><tr><th>Fix</th><th>Form</th><th>Status</th></tr></thead>
       <tbody>
-        <tr><td>Skill: four recipes, detection and instrumentation for Pipecat, ADK and LlamaIndex, license, description, paths, helper docs (findings 1 to 3)</td><td>Three git patches against AgnostAI/skills, 10 files, 261 lines, 3 new routing tests</td><td>Syntax checked with <code>node --check</code>; routing replicated on 8 fixtures (all expected); string rules in <code>test/skill-contract.mjs</code> checked by reading; the test suite itself was not run</td></tr>
+        <tr><td>Skill: four recipes, detection and instrumentation for Pipecat, ADK and LlamaIndex, license, description, paths, helper docs (findings 1 to 3)</td><td>Four git patches against AgnostAI/skills, 10 files, 265 lines, 3 new routing tests</td><td>Syntax checked with <code>node --check</code>; routing replicated on 8 fixtures (all expected); string rules in <code>test/skill-contract.mjs</code> checked by reading; the test suite itself was not run</td></tr>
+        <tr><td>ADK guide plugin for ADK 1.x and 2.x (finding 8)</td><td>Drop-in docs section</td><td>Tested offline on ADK 2.15.1 and 1.39.1 with a local OTLP receiver</td></tr>
         <tr><td>llms.txt (finding 5)</td><td>11 lines grouped by section</td><td>Ready to paste</td></tr>
         <tr><td>Mastra docs page (finding 6)</td><td>Markdown draft</td><td>Needs one run against a real org</td></tr>
         <tr><td>Pipecat listing (finding 7)</td><td>MDX page + docs.json line</td><td>API names checked against Pipecat v1.17.0</td></tr>
