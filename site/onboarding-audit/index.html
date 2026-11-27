@@ -74,7 +74,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
 
   <div class="hero">
     <h1>Eleven gaps between "paste this prompt" and a customer's first event</h1>
-    <p class="lede">I walked Agnost's onboarding path the way a new developer would on 27 Nov 2026: the homepage prompt, the <code>agnost-ai</code> skill it installs, the docs it links to, and the indexes AI assistants read. <strong>Every gap below has a fix already prepared.</strong> Nothing was posted or submitted anywhere.</p>
+    <p class="lede">I walked Agnost's onboarding path the way a new developer would on 27 Nov 2026: the homepage prompt, the <code>agnost-ai</code> skill it installs, the docs it links to, and the indexes AI assistants read. <strong>Every gap below has a fix already prepared.</strong> Nothing was posted or submitted anywhere; the only requests sent to Agnost's API were 24 empty test calls with an all-zero ID (finding 4).</p>
     <div class="path" role="list" aria-label="The onboarding path and findings per step">
       <div class="step" role="listitem"><span class="k">Step 1</span><b>Homepage prompt</b><span class="n">entry point · sales: 9, 10</span></div>
       <div class="step" role="listitem"><span class="k">Step 2</span><b>agnost-ai skill</b><span class="n">findings 1 to 4</span></div>
@@ -111,10 +111,10 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
     </div></div>
 
     <div class="finding"><div class="num">04</div><div>
-      <div class="tags"><span class="tag imp">activation</span><span class="tag fix">patch ready</span></div>
-      <h3>The skill's webhook URLs for 8 voice platforms use a parameter your API spec doesn't define</h3>
-      <p>For Retell, Bolna, Bland, ElevenLabs, Smallest AI, Synthflow, Cartesia and AgentPhone, the skill's recipes use <code>?project_id=</code>. Your <a href="https://docs.agnost.ai/openapi.json">OpenAPI spec</a> defines <code>org_id</code> as a <b>required</b> query parameter on all eight, and <code>project_id</code> appears nowhere in it. The Retell guide says a missing <code>org_id</code> returns <code>422</code>. If the API matches the spec, every voice team that follows the skill's recipe gets rejected calls and an empty dashboard.</p>
-      <p class="ev">I didn't call your API, so it's possible the server still accepts <code>project_id</code>. Fix: patch 5 switches the eight URLs to <code>org_id</code> and updates the four <code>skill-contract.mjs</code> assertions that pinned the old name. The skill's OTLP setup also sends <code>X-Agnost-Project-ID</code> where every docs page uses <code>X-Agnost-Org-ID</code>; worth one line in the docs saying both work, if they do.</p>
+      <div class="tags"><span class="tag">docs</span><span class="tag">minor</span></div>
+      <h3>Your docs call the voice webhook parameter <code>org_id</code>; your server's error message calls it <code>project_id</code></h3>
+      <p>For Retell, Bolna, Bland, ElevenLabs, Smallest AI, Synthflow, Cartesia and AgentPhone, the <a href="https://docs.agnost.ai/openapi.json">OpenAPI spec</a> and the docs pages use <code>?org_id=</code>, while the skill's recipes use <code>?project_id=</code>. I tested it (27 Nov, one empty request per platform with an all-zero ID, nothing stored): <b>both names work on all eight</b>, so nothing is broken for customers. The only rough edge is a developer who forgets the parameter: the 422 says <code>"loc":["query","project_id"]</code>, a name the docs never use.</p>
+      <p class="ev">Fix (optional, five minutes): mention in the voice docs that <code>project_id</code> is accepted as an alias, or have the validation error name <code>org_id</code>. No skill change needed. (An earlier version of this page said the skill's URLs would be rejected; the test above showed they aren't, so I corrected it.)</p>
     </div></div>
 
     <div class="finding"><div class="num">05</div><div>
