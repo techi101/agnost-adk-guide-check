@@ -25,7 +25,7 @@ your volume.
 | **Paid entry** | Starter $49/mo for 10,000 events | Pro $299/mo plus $0.003 per event up to 1M, then $0.002 |
 | **High volume** | Pro $499/mo for 1,000,000 events | Pro at $0.003 per event |
 | **Voice agents** | Documented setups for Retell, Vapi, Bolna, ElevenLabs, Bland, Synthflow, Smallest, Ultravox, LiveKit, Pipecat and Telnyx | No voice platform named on the homepage |
-| **Testing a fix** | Replays past runs against a suggested change and opens a PR | Simulations, labelled Beta: "test changes to your agent before you merge" |
+| **Testing a fix** | Replays past runs against a suggested change and opens a PR | Simulations run on every PR in a sandbox; Triage can have your coding agent prepare a fix and PR |
 | **Investigation** | Slack agent and MCP for Claude, Codex and Cursor | Triage Agent in Slack, web and MCP |
 | **Security** | SOC 2 Type I, Type II in progress | SOC 2 Type II, audited yearly |
 | **Custom models** | Trains a specialized model on your own traces | Not listed |
@@ -50,7 +50,9 @@ At a million events a month, Raindrop's list price is about 6.6 times Agnost's. 
 
 - **Voice.** Agnost documents setup for the voice platforms most teams build on, mostly as a webhook with no code. A
   voice agent's false "you're booked" is the failure we were built around.
-- **A fix you can merge.** Replay against past runs and a pull request are part of the product, not a beta.
+- **A fix replayed on your own past runs.** Both tools now test changes before merge. Agnost replays the fix against
+  the real conversations that failed; Raindrop simulates scenarios. Which fits depends on whether your failures are
+  easy to simulate.
 - **Price at volume.** See the table above.
 - **Specialized models.** For high-volume narrow tasks, Agnost trains a model on your own traces.
 
