@@ -165,6 +165,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
       <thead><tr><th>Check</th><th>Result</th></tr></thead>
       <tbody>
         <tr><td>Internal links across all 81 docs pages</td><td>43 links, 0 broken</td></tr>
+        <tr><td>Docs code samples vs the published SDKs (read from the packages, not run)</td><td>25 Python blocks checked against agnost 0.2.2 (functions, <code>begin()</code> and <code>end()</code> parameters, <code>Interaction</code> methods) and 7 TypeScript imports against agnostai 0.2.3 and agnost 0.2.4: 0 mismatches</td></tr>
         <tr><td>AI crawlers (GPTBot, ClaudeBot, PerplexityBot, Google-Extended, OAI-SearchBot)</td><td>All allowed by robots.txt and served 200 on the homepage and blog; Content-Signal allows AI input</td></tr>
         <tr><td>232 blog posts: canonical, share image, structured data, one H1, unique titles</td><td>All present. Only nit: 157 meta descriptions run past ~160 characters, so search results cut them off</td></tr>
         <tr><td>Telnyx docs page</td><td>Live at /telnyx-voice and listed in llms.txt</td></tr>
