@@ -27,15 +27,20 @@ from pipecat.adapters.schemas.tools_schema import ToolsSchema
 
 SCEN = sys.argv[1]
 USE_OBS = "--observer" in sys.argv
-setup_tracing(service_name=f"pipecat-{SCEN}" + ("-fix" if USE_OBS else ""), exporter=OTLPSpanExporter())
+LLM = os.environ.get("LLM", "openai")
+setup_tracing(service_name=f"pipecat-{SCEN}" + ("-fix" if USE_OBS else "") + ("" if LLM == "openai" else f"-{LLM}"), exporter=OTLPSpanExporter())
 
 PROMPTS = {"baseline": "Where is my order A-1042?", "no_followup": "Please end the call, order A-1042 is fine.",
-           "hangup": "Where is my order A-1042?", "interrupt": "Where is my order A-1042?", "parallel": "Check my two orders A-1042 and B-2077."}
+           "hangup": "Where is my order A-1042?", "interrupt": "Where is my order A-1042?", "parallel": "Check my two orders A-1042 and B-2077.", "timeout": "Where is my order A-1042?", "error": "Where is my order A-1042?"}
 
 
 async def get_order_status(params):
     if SCEN in ("hangup", "interrupt"):
         await asyncio.sleep(4)  # slow backend
+    if SCEN == "timeout":
+        await asyncio.sleep(10)  # longer than timeout_secs below
+    if SCEN == "error":
+        raise RuntimeError("order service returned 503")
     if SCEN == "no_followup":
         await params.result_callback({"ended": True}, properties=FunctionCallResultProperties(run_llm=False))
     else:
@@ -43,8 +48,15 @@ async def get_order_status(params):
 
 
 async def main():
-    llm = OpenAILLMService(api_key="test", base_url=os.environ["FAKE_OPENAI"], model="gpt-4.1-mini")
-    llm.register_function("get_order_status", get_order_status, cancel_on_interruption=True)
+    if LLM == "anthropic":
+        from anthropic import AsyncAnthropic
+        from pipecat.services.anthropic.llm import AnthropicLLMService
+        llm = AnthropicLLMService(api_key="test", model="claude-sonnet-4-5",
+                                  client=AsyncAnthropic(api_key="test", base_url=os.environ["FAKE_ANTHROPIC"]))
+    else:
+        llm = OpenAILLMService(api_key="test", base_url=os.environ["FAKE_OPENAI"], model="gpt-4.1-mini")
+    llm.register_function("get_order_status", get_order_status, cancel_on_interruption=True,
+                          timeout_secs=2 if SCEN == "timeout" else None)
     tools = ToolsSchema(standard_tools=[FunctionSchema(name="get_order_status", description="Look up an order",
                                                        properties={"order_id": {"type": "string"}}, required=["order_id"])])
     context = LLMContext([{"role": "system", "content": "You are a support agent."}], tools=tools)
@@ -73,7 +85,7 @@ async def main():
             await asyncio.sleep(1)
             await worker.cancel(reason="caller hung up")
             return
-        await asyncio.sleep(3)
+        await asyncio.sleep(6 if SCEN == "timeout" else 3)
         await worker.queue_frame(EndFrame())
 
     await asyncio.gather(PipelineRunner(handle_sigint=False).run(worker), drive())

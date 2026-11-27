@@ -81,7 +81,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
       <div class="step" role="listitem"><span class="k">Step 3</span><b>docs.agnost.ai</b><span class="n">findings 4 to 6, 12</span></div>
       <div class="step" role="listitem"><span class="k">Step 4</span><b>Platform listings</b><span class="n">findings 7, 8, 11</span></div>
     </div>
-    <p class="note" style="margin-top:18px;padding:14px 16px;background:var(--wine-bg);border-radius:10px;color:var(--ink)"><b>Tested, not just read (finding 12):</b> on Pipecat 1.17.0, following your docs exactly, tool calls with no follow-up LLM request (<code>end_call</code>-style tools, hangups mid-tool, interruptions) never reach Agnost: 3 of 6 lost across 5 scenarios. An 80-line observer fixes it, 6 of 6. <a href="/pipecat-tool-calls">Results, fix and a one-command test</a>.</p>
+    <p class="note" style="margin-top:18px;padding:14px 16px;background:var(--wine-bg);border-radius:10px;color:var(--ink)"><b>Tested, not just read (finding 12):</b> on Pipecat 1.17.0, following your docs exactly, tool calls with no follow-up LLM request (<code>end_call</code>-style tools, hangups mid-tool, interruptions) never reach Agnost, and with Claude even normal calls fall outside what the docs say recovery covers: 5 of 10 not recoverable across 9 scenarios. An 80-line observer fixes it, 10 of 10. <a href="/pipecat-tool-calls">Results, fix and a one-command test</a>.</p>
   </div>
 
   <section id="findings">
@@ -167,8 +167,8 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
     <div class="finding"><div class="num">12</div><div>
       <div class="tags"><span class="tag imp">data loss</span><span class="tag fix">tested fix</span></div>
       <h3>Pipecat tool calls with no follow-up LLM request never reach Agnost</h3>
-      <p>Your Pipecat page says Agnost recovers each function call from the LLM request that follows it. I ran your setup on Pipecat 1.17.0 against a local OTLP receiver in five scenarios. When a request follows, it works. When none does (a tool returning with <code>run_llm=False</code>, the usual <code>end_call</code> and <code>transfer_call</code> pattern; a caller hanging up mid-tool; a tool cancelled by an interruption), the call is in no exported span: 3 of 6 tool calls lost. Those are the calls where something went wrong.</p>
-      <p class="ev">Fix: <code>AgnostToolSpanObserver</code>, about 80 lines, writes an <code>execute_tool</code> span per call in the shape your other framework pages already document. With it, 6 of 6. Ready as skill patch 8 and a docs section. <a href="/pipecat-tool-calls">Full results and the code</a>.</p>
+      <p>Your Pipecat page says Agnost recovers each function call from the LLM request that follows it, for OpenAI-compatible services. I ran your setup on Pipecat 1.17.0 against a local OTLP receiver in nine scenarios. With an OpenAI-style LLM and a request after the tool, it works. When no request follows (a tool returning with <code>run_llm=False</code>, the usual <code>end_call</code> and <code>transfer_call</code> pattern; a caller hanging up mid-tool; a tool cancelled by an interruption), the call is in no exported span. With Claude, even normal calls arrive only as Anthropic <code>tool_use</code> blocks, outside what the docs say recovery covers. In total 5 of 10 tool calls not recoverable, and they are the calls where something went wrong.</p>
+      <p class="ev">Fix: <code>AgnostToolSpanObserver</code>, about 80 lines, writes an <code>execute_tool</code> span per call in the shape your other framework pages already document. With it, 10 of 10, whichever LLM the bot uses. Ready as skill patch 8 and a docs section. <a href="/pipecat-tool-calls">Full results and the code</a>.</p>
     </div></div>
   </section>
 
@@ -193,7 +193,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
       <thead><tr><th>Fix</th><th>Form</th><th>Status</th></tr></thead>
       <tbody>
         <tr><td>Skill: four recipes, detection and instrumentation for Pipecat, ADK and LlamaIndex, license, description, paths, helper docs (findings 1 to 3)</td><td>Eight git patches against AgnostAI/skills (0001 to 0008, including the community Anthropic route rebased), 11 files, 3 new routing tests, 4 updated assertions</td><td>Syntax checked with <code>node --check</code>; routing replicated on 8 fixtures (all expected); string rules in <code>test/skill-contract.mjs</code> checked by reading; the test suite itself was not run</td></tr>
-        <tr><td>Pipecat tool-call observer (finding 12)</td><td>Skill patch 8 + docs section + one-command test</td><td>Tested on Pipecat 1.17.0: 3 of 6 tool calls visible before, 6 of 6 after</td></tr>
+        <tr><td>Pipecat tool-call observer (finding 12)</td><td>Skill patch 8 + docs section + one-command test</td><td>Tested on Pipecat 1.17.0: 5 of 10 tool calls recoverable before, 10 of 10 after</td></tr>
         <tr><td>ADK guide plugin for ADK 1.x and 2.x (finding 8)</td><td>Drop-in docs section</td><td>Tested offline on ADK 2.15.1 and 1.39.1 with a local OTLP receiver</td></tr>
         <tr><td>llms.txt (finding 5)</td><td>11 lines grouped by section</td><td>Ready to paste</td></tr>
         <tr><td>Mastra docs page (finding 6)</td><td>Markdown draft</td><td>Needs one run against a real org</td></tr>

@@ -30,6 +30,30 @@
    "tool_calls_made": 1,
    "recipe_only": 0,
    "with_observer": 1
+  },
+  {
+   "scenario": "timeout",
+   "tool_calls_made": 1,
+   "recipe_only": 1,
+   "with_observer": 1
+  },
+  {
+   "scenario": "error",
+   "tool_calls_made": 1,
+   "recipe_only": 1,
+   "with_observer": 1
+  },
+  {
+   "scenario": "baseline (Claude)",
+   "tool_calls_made": 1,
+   "recipe_only": 0,
+   "with_observer": 1
+  },
+  {
+   "scenario": "no_followup (Claude)",
+   "tool_calls_made": 1,
+   "recipe_only": 0,
+   "with_observer": 1
   }
  ]
 }

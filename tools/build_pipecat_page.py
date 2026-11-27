@@ -81,8 +81,8 @@ page = f'''<!doctype html>
 
   <section id="reproduce">
     <h2>Reproduce it in about a minute</h2>
-    <pre><code>python -m venv .venv &amp;&amp; .venv/bin/pip install "pipecat-ai[tracing,openai]" opentelemetry-exporter-otlp-proto-http
-.venv/bin/python run_all.py    # starts the receiver and a fake OpenAI server, runs 5 scenarios x 2, writes results.json</code></pre>
+    <pre><code>python -m venv .venv &amp;&amp; .venv/bin/pip install "pipecat-ai[tracing,openai,anthropic]" opentelemetry-exporter-otlp-proto-http
+.venv/bin/python run_all.py    # starts the receiver and fake OpenAI and Anthropic servers, runs 9 scenarios x 2, writes results.json</code></pre>
     <p class="note">Files: <code>run_all.py</code>, <code>scenarios.py</code>, <code>fake_openai.py</code> (an OpenAI-compatible stub, so no API key), <code>receiver.py</code>, <code>agnost_tool_spans.py</code>, in <a href="https://github.com/techi101/agnost-adk-guide-check/tree/main/channels/pipecat-test">channels/pipecat-test</a>. Honest limits: I ran it against a local receiver, not your ingest, so I couldn't see how Agnost renders the new spans; the turn split needs real TTS frames, so this text-only test produces one turn per call; and on my Windows laptop an app-control policy blocks the compiled <code>sentencex</code> module, so the test puts a small pure-Python stand-in on <code>PYTHONPATH</code> (<code>shim/</code>; not needed on Linux or macOS).</p>
     <p class="note">Ready to hand over: a skill patch that adds the observer to the Pipecat recipe, and a docs section for docs.agnost.ai/pipecat.</p>
   </section>
