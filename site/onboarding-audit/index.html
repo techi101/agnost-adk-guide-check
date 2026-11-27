@@ -7,7 +7,7 @@
 <meta name="description" content="Twelve fixable gaps in Agnost AI's onboarding path, from the homepage prompt to the first event, each with evidence and a prepared fix.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..700&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Instrument+Sans:wght@400..600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
   --paper:#EDF0EA; --paper-2:#E3E8E1; --ink:#18201D; --muted:#56635E; --line:#CCD4CE;
@@ -64,6 +64,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
 @media (max-width:520px){.wrap{padding:0 16px}.path{grid-template-columns:1fr}.step{border-right:0;border-bottom:1px solid var(--line)}.finding{grid-template-columns:1fr;gap:4px}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
+<link rel="stylesheet" href="/assets/agnost-theme.css">
 </head>
 <body>
 <div class="wrap">
@@ -73,7 +74,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
   </header>
 
   <div class="hero">
-    <h1>Twelve gaps between "paste this prompt" and a customer's first event</h1>
+    <h1>Twelve gaps between “paste this prompt” and a customer’s first event</h1>
     <p class="lede">I walked Agnost's onboarding path the way a new developer would on 27 Nov 2026: the homepage prompt, the <code>agnost-ai</code> skill it installs, the docs it links to, and the indexes AI assistants read. <strong>Every gap below has a fix already prepared.</strong> Nothing was posted or submitted anywhere; the only requests sent to Agnost's API were 24 empty test calls with an all-zero ID (finding 4).</p>
     <div class="path" role="list" aria-label="The onboarding path and findings per step">
       <div class="step" role="listitem"><span class="k">Step 1</span><b>Homepage prompt</b><span class="n">entry point · sales: 9, 10</span></div>

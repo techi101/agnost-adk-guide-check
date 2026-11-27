@@ -1,0 +1,65 @@
+/* Shared override: maps the older pages (/, /pr-2650, /onboarding-audit) onto the Agnost visual language used by
+   /start and /pipecat-tool-calls: white canvas in a hairline frame, Instrument Serif display, Instrument Sans text,
+   DM Mono only for code and product labels, violet accent. Loaded after each page's own <style>. */
+:root{
+  --paper:#FFFFFF; --paper-2:#F3F0FD; --ink:#0C0C0C; --muted:#6B6B6B; --line:#E4E4E4;
+  --cobalt:#4B22C9; --cobalt-bg:#EFEAFE; --wine:#C2304A; --wine-bg:#FCEEF1; --amber:#8A5A00; --amber-bg:#FBF3E2;
+  --win:#FFFFFF; --win-bar:#FAFAF9;
+  --display:"Instrument Serif",Georgia,serif; --text:"Instrument Sans",system-ui,sans-serif; --mono:"DM Mono",ui-monospace,monospace;
+}
+body{background:#fff;color:var(--ink)}
+body>.wrap{max-width:1240px;border-left:1px solid var(--line);border-right:1px solid var(--line);padding:0 40px;min-height:100vh}
+header.top{border-bottom:1px solid var(--line);margin:0 -40px;padding:18px 40px}
+header.top b{font-weight:600}
+h1{font-family:var(--display)!important;font-weight:400!important;letter-spacing:-.01em!important;line-height:1.02!important}
+h2{font-family:var(--display)!important;font-weight:400!important;letter-spacing:-.01em!important}
+h1 em,h2 em{color:var(--cobalt)}
+code{background:var(--paper-2);color:#4B22C9;font-family:var(--mono)}
+a{color:#4B22C9}
+footer{border-top:1px solid var(--line)}
+footer .wrap{border:0;min-height:0}
+
+/* audit: journey strip */
+.path{box-shadow:none!important;border:1px solid var(--line);border-radius:12px}
+.step{background:#fff!important}
+.step .k{font-family:var(--text)!important;text-transform:none!important;letter-spacing:0!important;font-size:.82rem!important}
+.step .n{background:var(--cobalt-bg)!important;color:var(--cobalt)!important;font-family:var(--text)!important}
+
+/* audit: findings as an editorial numbered list, not a stack of boxes */
+.finding{background:transparent!important;box-shadow:none!important;border-radius:0!important;border-top:1px solid var(--line);padding:26px 0!important;margin:0!important;grid-template-columns:72px minmax(0,1fr)!important}
+#findings .finding:last-of-type{border-bottom:1px solid var(--line)}
+.finding .num{font:italic 400 34px/1 var(--display)!important;color:var(--cobalt)!important}
+.finding h3{font:600 1.12rem/1.35 var(--text)!important}
+.tag{font-family:var(--text)!important;font-size:.75rem!important;border-radius:999px!important;padding:4px 10px!important}
+.tag.fix{background:var(--cobalt-bg)!important;color:var(--cobalt)!important}
+.tag.imp{background:#F5F5F4!important;color:var(--ink)!important}
+.tag.dec{background:var(--amber-bg)!important}
+.ev{border-left:2px solid var(--cobalt-bg);padding-left:12px}
+
+/* tables */
+.tw,.tablewrap{box-shadow:none!important;border:1px solid var(--line);border-radius:12px}
+th{background:#FAFAF9!important;font-family:var(--text)}
+
+/* index + pr-2650 product windows */
+.window{box-shadow:0 0 0 1px var(--line),0 30px 70px -40px rgba(76,34,201,.35)!important;border-radius:14px!important}
+.chip{font-family:var(--mono)}
+.chip.miss{background:var(--wine-bg)!important;color:var(--wine)!important}
+
+@media (max-width:640px){
+  body>.wrap{padding:0 16px}
+  header.top{margin:0 -16px;padding:14px 16px}
+  .finding{grid-template-columns:1fr!important;gap:6px!important}
+}
+
+/* buttons: Agnost's black solid + dashed pair, square corners */
+.btn{border-radius:0!important;min-height:42px!important;font-size:14px!important;font-family:var(--text)}
+.btn.dark{background:var(--ink)!important;color:#fff!important}
+.btn.soft{background:transparent!important;box-shadow:none!important;border:1px dashed #3A3A3A;color:var(--ink)!important}
+.btn.soft:hover{border-style:solid}
+/* product-window backdrop: soft violet wash instead of the old sage */
+.stage{background:linear-gradient(180deg,#F3F0FD 0%,#FAF9FE 100%)!important}
+.stage svg,.stage canvas,.stage::before,.stage::after{opacity:.25}
+
+/* queue bars: competitors in soft violet, Agnost (.us) in full violet */
+.track i{background:#C9BCF7!important}
+.us .track i{background:#4B22C9!important}
